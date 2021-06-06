@@ -6,10 +6,11 @@
   >
     <div class="graph-paper">
 
-      <a-button v-on:click="compute">Compute</a-button>
+      <a-button @click="compute">Compute</a-button>
 
       <Node 
-      v-for="(node) in storage.equations" 
+      v-for="(node) in storage.equations"
+      ref="node"
       :key="node.id" 
       :formula="node.function" 
       :isselected="storage.activeEquations.includes(node.id) ? true : false"
@@ -59,7 +60,7 @@ export default {
         activeEquations: [0], // by IDs
         equations: [
           // ID: { attributes }
-          {id: 0, x:20, y:20, function: "f(y):=3*y", result: ""},
+          {id: 0, x:20, y:20, function: "f(y) \\coloneq 3 \\cdot y", result: ""},
           {id: 1, x:40, y:60,  function: "f(3)", result: ""},
           {id: 2, x:60, y:70,  function: "3*7", result: ""},
         ]
@@ -132,7 +133,15 @@ export default {
       // sort the equations be y position
       this.storage.equations.sort((a, b) => (a.y > b.y) ? 1 : (a.y === b.y) ? ((a.x > b.x) ? 1 : -1) : -1)
       this.storage.equations.forEach((equation, index, equations) => {
-        console.log(equation.function)
+        // find the vue element with the same ID as the looped equation
+        var nodeelement = this.$refs['node'].find(
+            el => el.id === equation.id
+        );
+        // call the getValue function
+        var ascii = JSON.parse(JSON.stringify(nodeelement.getValue("ascii-math")))
+        console.log(ascii, equation.function, nodeelement)
+        
+        // var val = calc.calculate(ascii) // equation.function
         var val = calc.calculate(equation.function)
         console.log("Result:", val)
         equations[index].result = val

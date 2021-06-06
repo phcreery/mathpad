@@ -136,6 +136,8 @@ function process(txt) {
         // if(expandIsChecked())
         //   expression = 'expand('+expression+')';
 
+        console.log(expression, scope)
+
         evaluated = nerdamer(expression, scope)
         //check if the user wants decimals
         // decimal = toDecimal() ? 'decimal' : undefined,
@@ -164,8 +166,11 @@ function process(txt) {
 }
 
 module.exports = {
-  calculate(text) {
-    console.log("Evaluating", text)
+  calculate(latex) {
+    console.log("Evaluating", latex, typeof latex)
+    var text = nerdamer.convertFromLaTeX(latex).toString();
+    // var text = latex
+    console.log("Computing", text, typeof text)
     var [output, isFunction] = process(text)
     console.log("Output", output)
     // var e = nerdamer(text);
