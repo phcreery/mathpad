@@ -22,8 +22,8 @@
       </div>
 
  <a-menu slot="overlay">
-      <a-menu-item>
-        <a href="javascript:;">Delete</a>
+      <a-menu-item @click="deletenode">
+        Delete
       </a-menu-item>
     </a-menu>
   </a-dropdown>
@@ -63,7 +63,10 @@ export default {
   },
   mounted: function () {
     this.initformula = this.formula
+    // EventBus.$on('focus', (id) => { id == this.id ? this.$refs.mathfield.focus() : undefined }) // this.$refs.mathfield.focus()
+    // console.log('ready')
     this.makeInteractable(this.$refs.myid)
+
   },
   methods: {
     makeInteractable(element) {
@@ -122,6 +125,9 @@ export default {
       console.log("changed to", event);
       EventBus.$emit('changed', {id: this.id, to: event})
     },
+    deletenode: function() {
+      EventBus.$emit('delete', this.id)
+    }
   },
   filters: {
     displayableresult: function (value) {

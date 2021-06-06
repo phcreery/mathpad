@@ -52,6 +52,8 @@ export default {
       // Right Click Menu active?
       contextmenu: false,
       defaultEquation: {id: 0, x:0, y:0,  function: "", result: ""},
+      mouseX: 0,
+      mouseY: 0,
       // The "File" that is open
       storage: {
         activeEquations: [0], // by IDs
@@ -74,11 +76,15 @@ export default {
     .on('tap', function (event) {
       parent.storage.activeEquations = []
       parent.contextmenu = false
+      parent.mouseX = event.x
+      parent.mouseY = event.y
+      console.log("Mouse button:", event.pointerId, event.button, event.x) // clientX
       event.preventDefault()
     })
     EventBus.$on('selected', (id) => { this.selectNode(id) })
     EventBus.$on('changed', (changeinfo) => { this.changeNodeValue(changeinfo) })
     EventBus.$on('moved', (changeinfo) => { this.changeNodePosition(changeinfo) })
+    EventBus.$on('delete', (id) => { this.deleteNode(id) })
   },
   methods: {
     selectNode(id) {
@@ -111,9 +117,15 @@ export default {
       var newEquation = JSON.parse(JSON.stringify(this.defaultEquation))
       console.log(newEquation, this.defaultEquation)
       newEquation.id = next
+      // newEquation.x = event.clientX - 80 // pageX
+      // newEquation.y = event.clientY - 100
+      newEquation.x = this.mouseX - 50 // pageX
+      newEquation.y = this.mouseY- 90
+      newEquation.function = "f(x):="
       this.storage.equations.push(newEquation)
       // this.storage.equations[this.storage.equations.length] = newEquation
-      parent.contextmenu = false
+      this.contextmenu = false
+      // EventBus.$emit('focus', next)
 
     },
     compute () {
@@ -127,6 +139,12 @@ export default {
         equations[index].result = val
       })
       console.log("After", this.storage.equations)
+    },
+    deleteNode (id) {
+      var index = this.storage.equations.findIndex((element) => element.id == id)
+      if (index > -1) {
+        this.storage.equations.splice(index, 1);
+      }
     }
   },
 }
