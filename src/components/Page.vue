@@ -108,11 +108,12 @@ export default {
       var inc = 1
       while(this.storage.equations.findIndex((element) => element.id == (next += inc)) > -1);
       console.log('next', next)
-      var newEquation = this.defaultEquation
+      var newEquation = JSON.parse(JSON.stringify(this.defaultEquation))
+      console.log(newEquation, this.defaultEquation)
       newEquation.id = next
       this.storage.equations.push(newEquation)
+      // this.storage.equations[this.storage.equations.length] = newEquation
       parent.contextmenu = false
-
 
     },
     compute () {
