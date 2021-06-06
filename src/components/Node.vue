@@ -1,34 +1,41 @@
 <template>
   <div id="grid-snap" ref="myid">
-    <!-- <a-tooltip>
-      <template slot="title">
-        [{{id}}]  {{formula}} = {{result}}
-      </template> -->
-      <a-dropdown v-model="contextmenu" :trigger="['click']">
 
+
+    <a-dropdown v-model="contextmenu" :trigger="['click']">
+
+      <!-- <a-tooltip placement="right">
+        <template slot="title">
+          [{{id}}]  {{formula}} = {{result}}
+          <a-icon type="setting" @click="()=>{}"/>
+        </template> -->
+
+        <div no-pointer-event class="node" :class="[ isselected ? 'selected' : 'notselected' ]">
+          <mathlive-mathfield
+          id="mf" 
+          ref="mathfield" 
+          :options="{smartFence:false, virtualKeyboardMode:'onfocus'}" 
+          @focus="ping"
+          @input="change"
+          >
+          <!-- v-model="initformula" -->
+            {{formula}}
+          </mathlive-mathfield>
+          {{result | displayableresult}}
+        </div>
         
-      <div no-pointer-event class="node" :class="[ isselected ? 'selected' : 'notselected' ]">
-        <mathlive-mathfield
-        id="mf" 
-        ref="mathfield" 
-        :options="{smartFence:false, virtualKeyboardMode:'onfocus'}" 
-        @focus="ping"
-        @input="change"
-        >
-        <!-- v-model="initformula" -->
-          {{formula}}
-        </mathlive-mathfield>
-        {{result | displayableresult}}
-      </div>
+      <!-- </a-tooltip> -->
 
- <a-menu slot="overlay">
-      <a-menu-item @click="deletenode">
-        Delete
-      </a-menu-item>
-    </a-menu>
-  </a-dropdown>
+      <a-menu slot="overlay">
+        <a-menu-item @click="deletenode">
+          Delete
+        </a-menu-item>
+      </a-menu>
 
-    <!-- </a-tooltip> -->
+    </a-dropdown>
+      
+
+
   </div>
 </template>
 
@@ -71,7 +78,6 @@ export default {
   methods: {
     makeInteractable(element) {
       // https://interactjs.io/
-      console.log("Interactable:", element, id)
       var x = this.x
       var y = this.y
       var id = this.id

@@ -129,7 +129,6 @@ export default {
 
     },
     compute () {
-      console.log("Before sort and Compute", this.storage.equations)
       // sort the equations be y position
       this.storage.equations.sort((a, b) => (a.y > b.y) ? 1 : (a.y === b.y) ? ((a.x > b.x) ? 1 : -1) : -1)
       this.storage.equations.forEach((equation, index, equations) => {
@@ -138,7 +137,6 @@ export default {
         console.log("Result:", val)
         equations[index].result = val
       })
-      console.log("After", this.storage.equations)
     },
     deleteNode (id) {
       var index = this.storage.equations.findIndex((element) => element.id == id)
