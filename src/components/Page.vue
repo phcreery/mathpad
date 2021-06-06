@@ -1,21 +1,36 @@
 <template>
-  <div class="graph-paper">
-    <!-- Page1 -->
+<div :style="{height: '100%'}">
+  <a-dropdown 
+  :trigger="['contextmenu']"
+  v-model="contextmenu"
+  >
+    <div class="graph-paper">
 
-    <button v-on:click="compute">Compute</button>
+      <a-button v-on:click="compute">Compute</a-button>
 
-    <Node 
-    v-for="(node) in storage.equations" 
-    :key="node.id" 
-    :formula="node.function" 
-    :isselected="storage.activeEquations.includes(node.id) ? true : false"
-    :x="node.x"
-    :y="node.y"
-    :id="node.id"
-    :result="node.result"
-    />
+      <Node 
+      v-for="(node) in storage.equations" 
+      :key="node.id" 
+      :formula="node.function" 
+      :isselected="storage.activeEquations.includes(node.id) ? true : false"
+      :x="node.x"
+      :y="node.y"
+      :id="node.id"
+      :result="node.result"
+      />
 
-  </div>
+    </div>
+    <a-menu slot="overlay">
+      <a-menu-item key="1" @click="addnode">
+        Add Equation
+      </a-menu-item>
+      <a-menu-item key="2" disabled>
+        Add Text Box
+      </a-menu-item>
+    </a-menu>
+  </a-dropdown>
+</div>
+
 </template>
 
 <script>
@@ -34,13 +49,16 @@ export default {
   },
   data () {
     return {
-      formula: "f(x)=",
+      // Right Click Menu active?
+      contextmenu: false,
+      defaultEquation: {id: 0, x:0, y:0,  function: "", result: ""},
+      // The "File" that is open
       storage: {
         activeEquations: [0], // by IDs
         equations: [
           // ID: { attributes }
-          {id: 0, x:10, y:10, function: "f(y):=3*y", result: ""},
-          {id: 1, x:30, y:50,  function: "f(3)", result: ""},
+          {id: 0, x:20, y:20, function: "f(y):=3*y", result: ""},
+          {id: 1, x:40, y:60,  function: "f(3)", result: ""},
           {id: 2, x:60, y:70,  function: "3*7", result: ""},
         ]
       }
@@ -55,6 +73,7 @@ export default {
     })
     .on('tap', function (event) {
       parent.storage.activeEquations = []
+      parent.contextmenu = false
       event.preventDefault()
     })
     EventBus.$on('selected', (id) => { this.selectNode(id) })
@@ -62,10 +81,6 @@ export default {
     EventBus.$on('moved', (changeinfo) => { this.changeNodePosition(changeinfo) })
   },
   methods: {
-    setIt: function () {
-      console.log("Setting")
-      this.formula = 'y=-b\\pm \\frac {\\sqrt{b^2-4ac}}{2a}';
-    },
     selectNode(id) {
       console.log("Selecting", id)
       this.storage.activeEquations = [id]
@@ -87,6 +102,19 @@ export default {
         this.storage.equations[index].y = changeInfo.y
       }
     },
+    addnode() {
+      // get next available ID
+      var next = 1
+      var inc = 1
+      while(this.storage.equations.findIndex((element) => element.id == (next += inc)) > -1);
+      console.log('next', next)
+      var newEquation = this.defaultEquation
+      newEquation.id = next
+      this.storage.equations.push(newEquation)
+      parent.contextmenu = false
+
+
+    },
     compute () {
       console.log("Before sort and Compute", this.storage.equations)
       // sort the equations be y position
@@ -98,7 +126,6 @@ export default {
         equations[index].result = val
       })
       console.log("After", this.storage.equations)
-      
     }
   },
 }

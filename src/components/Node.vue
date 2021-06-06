@@ -4,6 +4,9 @@
       <template slot="title">
         [{{id}}]  {{formula}} = {{result}}
       </template> -->
+      <a-dropdown v-model="contextmenu" :trigger="['click']">
+
+        
       <div no-pointer-event class="node" :class="[ isselected ? 'selected' : 'notselected' ]">
         <mathlive-mathfield
         id="mf" 
@@ -17,6 +20,14 @@
         </mathlive-mathfield>
         {{result | displayableresult}}
       </div>
+
+ <a-menu slot="overlay">
+      <a-menu-item>
+        <a href="javascript:;">Delete</a>
+      </a-menu-item>
+    </a-menu>
+  </a-dropdown>
+
     <!-- </a-tooltip> -->
   </div>
 </template>
@@ -47,6 +58,7 @@ export default {
     return {
       gridSize: 20, // px
       initformula: "",
+      contextmenu: false
     }
   },
   mounted: function () {
@@ -61,6 +73,7 @@ export default {
       var y = this.y
       var id = this.id
       element.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px)'
+      // var parent = this
 
       interact(element)
       .draggable({
@@ -88,6 +101,10 @@ export default {
       .on('tap', function () {
         EventBus.$emit('selected', id)
       })
+      // .on('doubletap', function (event) {
+      //   parent.contextmenu = true
+      //   event.preventDefault()
+      // })
       .on('dragmove', function (event) {
         x += event.dx
         y += event.dy
