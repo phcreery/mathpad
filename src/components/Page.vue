@@ -74,7 +74,6 @@ export default {
   },
   data () {
     return {
-      // Right Click Menu active?
       contextmenu: false,
       contextmenutrigger: ['contextmenu'],
       defaultEquation: {id: 0, x:0, y:0,  function: "", result: ""},
@@ -161,23 +160,18 @@ export default {
       console.log('next id', next)
       var newEquation = JSON.parse(JSON.stringify(this.defaultEquation))
       newEquation.id = next
-      // newEquation.x = event.clientX - 80 // pageX
-      // newEquation.y = event.clientY - 100
       newEquation.x = this.mouseX - 50 // pageX
       newEquation.y = this.mouseY- 90
       newEquation.function = "f(x):="
       this.storage.equations.push(newEquation)
-      // this.storage.equations[this.storage.equations.length] = newEquation
       this.contextmenu = false
       this.storage.activeEquations = [next]
-      // this.$emit('init')
-      // while(this.$refs['node'].findIndex((element) => element.id == next) == -1);
+      // this.$emit('init') // optinal force update
+      // some hackery to make sure the new component renderd before calling it
       setTimeout(() => { // setTimeout to put this into event queue
         // executed after render
-
         EventBus.$emit('focus', next)
       }, 0)
-      // EventBus.$emit('focus', next)
       console.log(this.storage.activeEquations)
 
     },

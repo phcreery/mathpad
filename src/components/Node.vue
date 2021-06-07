@@ -12,6 +12,7 @@
         class="node"
         :class="[isselected ? 'selected' : 'notselected']"
       >
+      <!-- put a 4px space between node, =, result -->
       <a-space :size="4">
         <mathlive-mathfield
           id="mf"
@@ -20,7 +21,6 @@
           @focus="ping"
           @input="change"
         >
-          <!-- v-model="initformula" -->
           {{ formula }}
         </mathlive-mathfield>
         <div v-if="(format == 'string') && result">
@@ -53,18 +53,12 @@
 
 <script>
 import interact from 'interactjs'
-// import katex from 'katex';
-
-// // import MathLive from "./mathlive/mathlive.min.mjs";
-// import MathfieldComponent  from "../mathlive/vue-mathlive.vue";
 
 import { EventBus } from './eventbus.js'
 
 export default {
   name: 'Node',
   components: {
-    // MathliveMathfield,
-    // mathlivemathfield : MathfieldComponent
   },
   props: {
     id: Number,
@@ -84,8 +78,7 @@ export default {
   },
   mounted: function() {
     this.initformula = this.formula
-    EventBus.$on('focus', (id) => { console.log(id, this.id); if (id == this.id){console.log('this one', id); this.makeFocus() } }) // this.$refs.mathfield.focus()
-    // console.log('ready')
+    EventBus.$on('focus', (id) => { if (id == this.id) this.makeFocus() })
     this.makeInteractable(this.$refs.myid)
   },
   methods: {
@@ -129,7 +122,6 @@ export default {
           // }
         })
         .on('doubletap', function (event) {
-          // parent.contextmenu = true
           event.preventDefault()
         })
         .on('dragmove', function(event) {
@@ -188,7 +180,6 @@ export default {
   position: absolute;
   /* put equal sign to the right of the node */
   white-space: nowrap;
-  /* min-width: 40px; */
 }
 .selected {
   border: 1px;
@@ -227,7 +218,7 @@ export default {
 /* @import "../node_modules/katex/dist/katex.min.css"; */
 .ML__fieldcontainer {
   min-height: 19px !important;
-  min-width: 40px;
+  min-width: 20px;
 }
 /* .ML__fieldcontainer_field {
   min-width: 40px;
