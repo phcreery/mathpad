@@ -53,132 +53,82 @@ function prepareExpression(str) {
     return [expression, scope];
 }
 
-//callback for handling of entered expression
-function process(txt) {
-  // var txt = getText()
-  var expressionAndScope = prepareExpression(txt)
-  var expression = expressionAndScope[0]
-  var scope = expressionAndScope[1]
-    //alternative regex: ^([a-z_][a-z\d\_]*)\(([a-z_,])\):=([\+\-\*\/a-z\d*_,\^!\(\)]+)
-  var functionRegex = /^([a-z_][a-z\d_]*)\(([a-z_,\s]*)\):=(.+)$/gi //does not validate the expression
-  var functionDeclaration = functionRegex.exec(expression)
-  // var LaTeX
-  // var panelExpression
-  var evaluated
-  
-  //it might be a function declaration. If it is the scope object gets ignored
-  if (functionDeclaration) {
-    console.log('Got a function!')
-    //Remember: The match comes back as [str, fnName, params, fnBody]
-    //the function name should be the first group of the match
-    var fnName = functionDeclaration[1]
-    //the parameters are the second group according to this regex but comes with commas 
-    //hence the splitting by ,
-    var params = functionDeclaration[2].split(',')
-    //the third group is just the body and now we have all three parts nerdamer needs to create the function
-    var fnBody = functionDeclaration[3];
-    
-    //we never checked if this is in proper format for nerdamer so we'll just try and if nerdamer complains we'll let the person know
-    try {
-      console.log(fnName, params, fnBody)
-      evaluated = nerdamer.setFunction(fnName, params, fnBody);
-      //generate the latex
-      // LaTeX = fnName+ //parse the function name with nerdamer so we can get back some nice LaTeX
-      //         '('+ //do the same for the parameters
-      //             params.map(function(x) {
-      //                 return nerdamer(x).toTeX();
-      //             }).join(',')+
-      //         '):='+
-      //         nerdamer(fnBody).toTeX();
-
-      // if(Object.keys(scope).length > 0)
-        // notify('A variable object was provided but is ignored for function declaration.');
-      
-      //add the LaTeX to the panel
-      // panelExpression = addToPanel(LaTeX, expression, undefined, undefined, txt); 
-      // clear();
-      return [evaluated, functionDeclaration]
-    }
-    catch(e) { 
-      // notify('Error: Could not set function.</br>'+e.toString());
-      console.log('Error: Could not set function.</br>'+e.toString())
-    }
-  } else {
-    var variableDeclaration = /^([a-z_][a-z\d_]*):(.+)$/gi.exec(expression);
-    if(variableDeclaration) {
-      try {
-        var varName = variableDeclaration[1],
-          varValue = variableDeclaration[2];
-        //set the value
-        evaluated = nerdamer.setVar(varName, varValue);
-        //generate the LaTeX
-        // LaTeX = varName+':'+nerdamer(varValue).toTeX();
-        // panelExpression = addToPanel(LaTeX, expression, undefined, varName, txt);   
-        // clear();
-        return [evaluated.evaluate(), functionDeclaration]
-      }
-      catch(e){
-        // notify('Something went wrong. Nerdamer could not parse expression!</br>'+e.toString());
-        console.log('Something went wrong. Nerdamer could not parse expression!</br>'+e.toString())
-      } 
-    }
-    else {
-      try {
-        //store the user expression so modifications don't get added
-        var user_expression = expression;
-        // Extract solve
-        var expr_w_solve = user_expression.match(/solve\((.+),\s*\w\)/);
-        if(expr_w_solve) {
-          user_expression = expr_w_solve[1];
-        }
-        
-        //wrap the expression in expand if expand is checked
-        // if(expandIsChecked())
-        //   expression = 'expand('+expression+')';
-
-        console.log(expression, scope)
-
-        evaluated = nerdamer(expression, scope)
-        //check if the user wants decimals
-        // decimal = toDecimal() ? 'decimal' : undefined,
-        // var decimal = undefined
-        //the output is for the reload button
-        // var output = evaluated.toString(); 
-        //call evaluate if the evaluate box is checked
-        // if(evaluateIsChecked()) {
-        //   evaluated = evaluated.evaluate();
-        // }
-        // LaTeX = evaluated.toTeX(decimal);
-        //add the LaTeX to the panel
-        // panelExpression = addToPanel(LaTeX, user_expression, output, undefined, txt);   
-        // clear();
-        return [evaluated.evaluate(), functionDeclaration]
-      }
-      catch(e){
-        console.log(e.stack);
-        // notify('Something went wrong. Nerdamer could not parse expression!</br>'+e.toString());
-        console.log('Something went wrong. Nerdamer could not parse expression!</br>'+e.toString())
-      }
-    }
-  }
-  
-  return undefined
-}
 
 module.exports = {
-  calculate(latex) {
-    console.log("Evaluating", latex, typeof latex)
-    var text = nerdamer.convertFromLaTeX(latex).toString();
-    // var text = latex
-    console.log("Computing", text, typeof text)
-    var [output, isFunction] = process(text)
-    console.log("Output", output)
-    // var e = nerdamer(text);
-    // console.log(e.evaluate().toString());
-    // return e
-    if (isFunction) {
-      return ''
+  calculate(LaTeX) { // modified for LaTeX input
+    // var txt = getText()
+    var expressionAndScope = prepareExpression(LaTeX)
+    var expression = expressionAndScope[0]
+    var scope = expressionAndScope[1]
+    // var functionRegex = /^([a-z_][a-z\d_]*)\(([a-z_,\s]*)\):=(.+)$/gi //does not validate the expression
+    var functionRegex = /^([a-z_][a-z\d_]*)\(([a-z_,\s]*)\)\s*(?::=|\\coloneq)\s*(.+)$/gi //does not validate the expression
+    var functionDeclaration = functionRegex.exec(expression)
+    console.log(JSON.stringify(expression), ' is function?', functionDeclaration)
+    var evaluated
+    
+    //it might be a function declaration. If it is the scope object gets ignored
+    if (functionDeclaration) {
+      console.log('Got a function!')
+      //Remember: The match comes back as [str, fnName, params, fnBody]
+      //the function name should be the first group of the match
+      var fnName = functionDeclaration[1]
+      //the parameters are the second group according to this regex but comes with commas 
+      //hence the splitting by ,
+      var params = functionDeclaration[2].split(',')
+      //the third group is just the body and now we have all three parts nerdamer needs to create the function
+      var fnBody = nerdamer.convertFromLaTeX(functionDeclaration[3]).toString()
+      
+      //we never checked if this is in proper format for nerdamer so we'll just try and if nerdamer complains we'll let the person know
+      try {
+        console.log(fnName, params, fnBody)
+        evaluated = nerdamer.setFunction(fnName, params, fnBody);
+        // return evaluated
+        return undefined
+      }
+      catch(e) { 
+        console.log('Error: Could not set function.</br>'+e.toString())
+      }
+    } else {
+      var variableDeclaration = /^([a-z_][a-z\d_]*):(.+)$/gi.exec(expression);
+      if (variableDeclaration) {
+        console.log('Got a variable declaration!')
+        try {
+          var varName = variableDeclaration[1]
+          var varValue = nerdamer.convertFromLaTeX(variableDeclaration[2]).toString()
+          //set the value
+          evaluated = nerdamer.setVar(varName, varValue);
+          // return evaluated.evaluate().toString()
+          return undefined
+        }
+        catch(e){
+          console.log('Something went wrong. Nerdamer could not parse expression!</br>'+e.toString())
+        } 
+      }
+      else {
+        try {
+          //store the user expression so modifications don't get added
+          var user_expression = expression;
+          // Extract solve
+          var expr_w_solve = user_expression.match(/solve\((.+),\s*\w\)/);
+          if(expr_w_solve) {
+            user_expression = nerdamer.convertFromLaTeX(expr_w_solve[1]).toString()
+          } else {
+            user_expression = nerdamer.convertFromLaTeX(user_expression).toString()
+          }
+          console.log(expression, scope)
+
+          evaluated = nerdamer(expression, scope)
+
+          return evaluated.evaluate().toString()
+          // return undefined
+        }
+        catch(e){
+          console.log(e.stack);
+          console.log('Something went wrong. Nerdamer could not parse expression!</br>'+e.toString())
+        }
+      }
     }
-    return output.toString()
+    
+    return undefined
   }
 }

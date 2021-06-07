@@ -61,8 +61,10 @@ export default {
         equations: [
           // ID: { attributes }
           {id: 0, x:20, y:20, function: "f(y) \\coloneq 3 \\cdot y", result: ""},
-          {id: 1, x:40, y:60,  function: "f(3)", result: ""},
-          {id: 2, x:60, y:70,  function: "3*7", result: ""},
+          {id: 1, x:20, y:60,  function: "f(3)", result: ""},
+          {id: 2, x:20, y:100,  function: "3*7", result: ""},
+          {id: 3, x:20, y:200,  function: "g:3", result: ""},
+          {id: 4, x:20, y:240,  function: "g+3", result: ""},
         ]
       }
     }
