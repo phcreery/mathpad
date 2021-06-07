@@ -20,6 +20,7 @@
           :options="{ smartFence: false, virtualKeyboardMode: 'onfocus', virtualKeyboards: 'all', virtualKeyboardTheme: 'apple', fontsDirectory:'./fonts' }"
           @focus="ping"
           @input="change"
+          v-model="localformula"
         >
           {{ formula }}
         </mathlive-mathfield>
@@ -45,6 +46,15 @@
       <a-menu slot="overlay">
         <a-menu-item @click="deletenode">
           Delete
+        </a-menu-item>
+        <a-menu-item @click="() => {contextmenu=false; copyToClipboard(formula)}">
+          Copy Equation
+        </a-menu-item>
+        <a-menu-item @click="() => {contextmenu=false; copyToClipboard(result)}">
+          Copy Result
+        </a-menu-item>
+        <a-menu-item @click="() => {contextmenu=false; getClipboard((text) => change(text)); return true}">
+          Paste Equation
         </a-menu-item>
       </a-menu>
     </a-dropdown>
@@ -72,7 +82,7 @@ export default {
   data() {
     return {
       gridSize: 20, // px
-      initformula: '',
+      localformula: '',
       contextmenu: false
     }
   },
@@ -141,8 +151,10 @@ export default {
       EventBus.$emit('selected', this.id)
     },
     change: function(event) {
-      console.log('changed to', event)
+      console.log('changed to', event, typeof event)
       EventBus.$emit('changed', { id: this.id, to: event })
+      // this.$emit('init')
+      this.localformula = event
     },
     deletenode: function() {
       EventBus.$emit('delete', this.id)
@@ -150,6 +162,25 @@ export default {
     getValue(type) {
       console.log('getting')
       return this.$refs.mathfield.getValue(type)
+    },
+    copyToClipboard(text) {
+      var dummy = document.createElement("textarea");
+      // to avoid breaking orgain page when copying more words
+      // cant copy when adding below this code
+      // dummy.style.display = 'none'
+      document.body.appendChild(dummy);
+      //Be careful if you use texarea. setAttribute('value', value), which works with "input" does not work with "textarea". – Eduard
+      dummy.value = text;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+    },
+    getClipboard(cb) {
+      var text
+      navigator.clipboard.readText().then((text) => cb(text));
+      // const clipboardItems = await navigator.clipboard.read();
+      console.log(text);
+      // return text
     }
   },
   filters: {
