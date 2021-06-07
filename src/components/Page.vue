@@ -8,7 +8,7 @@
     
     <a-space>
       <a-button @click="compute">Compute</a-button>
-      <a-select default-value="Decimal" style="width: 120px" @change="handleChangeNformat">
+      <a-select default-value="Decimal" style="width: 100px" @change="handleChangeNformat">
         <a-select-option value="decimals">
           Decimal
         </a-select-option>
@@ -19,7 +19,15 @@
           Recurring
         </a-select-option>
       </a-select>
-      <a-input-number v-if="mathOptions.format == 'decimals'" id="inputNumber" v-model="mathOptions.decimals" :min="1" :max="10" />
+      <a-input-number v-if="mathOptions.format == 'decimals'" id="inputNumber" style="width: 60px" v-model="mathOptions.decimals" :min="1" :max="10" />
+      <a-select default-value="String" style="width: 100px" @change="handleChangeOUTformat">
+        <a-select-option value="decimals">
+          String
+        </a-select-option>
+        <a-select-option value="fractions">
+          LaTeX
+        </a-select-option>
+      </a-select>
     </a-space>
 
       <Node 

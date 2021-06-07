@@ -12,6 +12,7 @@
         class="node"
         :class="[isselected ? 'selected' : 'notselected']"
       >
+      <a-space :size="4">
         <mathlive-mathfield
           id="mf"
           ref="mathfield"
@@ -22,7 +23,16 @@
           <!-- v-model="initformula" -->
           {{ formula }}
         </mathlive-mathfield>
-        {{ result | ifdisplayableresult }}
+        <!-- {{ result | ifdisplayableresult }} -->
+        <katex-element expression="=" v-if="result" style="display: inline-block"/>
+        <div v-katex="result" v-if="result" style="display: inline-block">
+          <!-- {{ result | ifdisplayableresult }} -->
+          <!-- {{result}} -->
+        </div>
+        <p v-if="result">
+          &nbsp;
+        </p>
+        </a-space>
       </div>
 
       <!-- </a-tooltip> -->
@@ -38,6 +48,7 @@
 
 <script>
 import interact from 'interactjs'
+// import katex from 'katex';
 
 // // import MathLive from "./mathlive/mathlive.min.mjs";
 // import MathfieldComponent  from "../mathlive/vue-mathlive.vue";
@@ -142,7 +153,7 @@ export default {
   filters: {
     ifdisplayableresult: function(value) {
       if (!value) return ''
-      return '= ' + value + ' '
+      return '=' + value + ' '
     }
   }
 }
@@ -202,6 +213,7 @@ export default {
 </style>
 
 <style>
+/* @import "../node_modules/katex/dist/katex.min.css"; */
 .ML__fieldcontainer {
   min-height: 19px !important;
 }

@@ -11,7 +11,9 @@
     "ant-design-vue": "^1.7.5",
     "core-js": "^3.6.5",
     "interactjs": "^1.10.11",
-    "vue": "^2.6.11"
+    "katex": "^0.13.11",
+    "vue": "^2.6.11",
+    "vue-katex": "^0.5.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

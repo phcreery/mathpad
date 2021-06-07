@@ -5,6 +5,10 @@ import App from './App.vue'
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 
+import VueKatex from 'vue-katex';
+import 'katex/dist/katex.min.css';
+
+
 // import MathLive from "https://unpkg.com/mathlive/dist/mathlive.min.mjs";
 // import Mathfield from "https://unpkg.com/mathlive/dist/vue-mathlive.mjs";
 // import * as MathLive from '/dist/mathlive.mjs';
@@ -22,6 +26,12 @@ Vue.config.devtools = true;
 Vue.use(Antd);
 Vue.use(MathfieldComponent, MathLive);
 // Vue.use(MathLive);
+
+Vue.use(VueKatex, {
+  globalOptions: {
+    //... Define globally applied KaTeX options here
+  }
+});
 
 new Vue({
   render: h => h(App),
