@@ -152,8 +152,9 @@ module.exports = {
           console.log('expression(convertFromLaTeX)', expression, scope)
           evaluated = nerdamer(expression, scope)
           evaluated = evaluated.evaluate()
-          text = evaluated.text(options.format, options.decimals)
-          LaTeX = evaluated.toTeX(options.format == 'decimal' ? 'decimals' : undefined)
+          text = evaluated.text(options.numberformat == 'decimals' ? 'decimals' : undefined, options.decimals)
+          // LaTeX = evaluated.toTeX(options.numberformat == 'decimals' ? 'decimals' : undefined, options.decimals)
+          LaTeX = nerdamer(text).toTeX(options.numberformat == 'decimals' ? 'decimals' : undefined)
           return { text, LaTeX }
           // return undefined
         }

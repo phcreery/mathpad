@@ -19,8 +19,8 @@
           Recurring
         </a-select-option>
       </a-select>
-      <a-input-number v-if="mathOptions.format == 'decimals'" id="inputNumber" style="width: 60px" v-model="mathOptions.decimals" :min="1" :max="10" />
-      <a-select default-value="String" style="width: 100px" @change="handleChangeOUTformat">
+      <a-input-number v-if="mathOptions.numberformat == 'decimals'" id="inputNumber" style="width: 60px" v-model="mathOptions.decimals" :min="1" :max="10" />
+      <a-select default-value="LaTeX" style="width: 100px" @change="handleChangeOUTformat">
         <a-select-option value="string">
           String
         </a-select-option>
@@ -79,7 +79,7 @@ export default {
       defaultEquation: {id: 0, x:0, y:0,  function: "", result: ""},
       mouseX: 0,
       mouseY: 0,
-      outputFormat: 'string',
+      outputFormat: 'LaTeX',
       mathOptions: {
         numberformat: 'decimals',
         decimals: 5,
@@ -195,7 +195,7 @@ export default {
       }
     },
     handleChangeNformat(value) {
-      this.mathOptions.format = value
+      this.mathOptions.numberformat = value
     },
     handleChangeOUTformat(value) {
       this.outputFormat = value
