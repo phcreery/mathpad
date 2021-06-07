@@ -97,6 +97,12 @@ export default {
           {id: 5, x:20, y:280,  function: "\\frac{4}{5}", result: ""},
           {id: 6, x:20, y:340,  function: "solve(4x=2,x)", result: ""},
           {id: 7, x:20, y:380,  function: "simplify((x^2+4*x-45)/(x^2+x-30))", result: ""},
+
+          {id: 8, x:300, y:20,  function: "fib(15)", result: ""},
+          {id: 9, x:300, y:60,  function: "\\sqrt{a^2 + b^2}", result: ""},
+          {id: 10, x:300, y:100,  function: "integrate(sec(x)^2, x)", result: ""}, //\int\sec(x),dx
+          {id: 11, x:300, y:140,  function: "\\int(\\sec(x)^2),dx", result: ""}, //\int\sec(x),dx
+
         ]
       }
     }

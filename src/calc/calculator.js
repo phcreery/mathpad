@@ -20,18 +20,19 @@ function extractExpression(str) {
         return [match[1], match[3]];
     return [str, ''];
     */
-    var l = str.length,
-        openBrackets = 0,
-        retval;
-    for(var i=0; i<l; i++) {
-        var ch = str.charAt(i);
-        if(ch === '(' || ch === '[') openBrackets++; //record and open brackets
-        if(ch === ')' || ch === ']') openBrackets--; //close the bracket
-        if(ch === ',' && !openBrackets) {
-            retval = [str.substr(0, i), str.substr(i+1, l)];
-            return retval;
-        }
-    }
+  
+    // var l = str.length,
+    //     openBrackets = 0,
+    //     retval;
+    // for(var i=0; i<l; i++) {
+    //     var ch = str.charAt(i);
+    //     if(ch === '(' || ch === '[') openBrackets++; //record and open brackets
+    //     if(ch === ')' || ch === ']') openBrackets--; //close the bracket
+    //     if(ch === ',' && !openBrackets) {
+    //         retval = [str.substr(0, i), str.substr(i+1, l)];
+    //         return retval;
+    //     }
+    // }
 
     return [str, ''];
 }
@@ -39,18 +40,18 @@ function extractExpression(str) {
 //perform preparations before parsing. Extract variables and declarations
 function prepareExpression(str) {
     //the string will come in the form x+x, x=y, y=z
-    var extracted = extractExpression(str),
-        expression = extracted[0],
-        scope = {};
-    extracted[1].split(',').map(function(x) {
-        x = x.trim(); //remove white space at both ends
-        var parts = x.split('='),
-            varname = parts[0],
-            value = parts[1];
-        if(nerdamer.validVarName(varname) && typeof value !== 'undefined')
-            scope[varname] = parts[1];
-    });
-    return [expression, scope];
+  var extracted = extractExpression(str)
+  var expression = extracted[0]
+  var scope = {};
+  extracted[1].split(',').map(function(x) {
+      x = x.trim(); //remove white space at both ends
+      var parts = x.split('='),
+          varname = parts[0],
+          value = parts[1];
+      if(nerdamer.validVarName(varname) && typeof value !== 'undefined')
+          scope[varname] = parts[1];
+  });
+  return [expression, scope];
 }
 
 
@@ -133,6 +134,7 @@ module.exports = {
           // } else {
           //   user_expression = nerdamer.convertFromLaTeX(user_expression).toString()
           // }
+          console.log("looking at", expression)
           expression = nerdamer.convertFromLaTeX(expression).toString()
           console.log('expression(convertFromLaTeX)', expression, scope)
           evaluated = nerdamer(expression, scope)
