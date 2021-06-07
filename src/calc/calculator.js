@@ -55,7 +55,7 @@ function prepareExpression(str) {
 
 
 module.exports = {
-  calculate(LaTeX) { // modified for LaTeX input
+  calculate(LaTeX, options) { // modified for LaTeX input
     // var txt = getText()
     var expressionAndScope = prepareExpression(LaTeX)
     var expression = expressionAndScope[0]
@@ -97,8 +97,8 @@ module.exports = {
           var varValue = nerdamer.convertFromLaTeX(variableDeclaration[2]).toString()
           //set the value
           evaluated = nerdamer.setVar(varName, varValue);
-          // return evaluated.evaluate().toString()
-          return undefined
+          return nerdamer(varValue, scope).evaluate().toString()
+          // return undefined
         }
         catch(e){
           console.log('Something went wrong. Nerdamer could not parse expression!</br>'+e.toString())
@@ -119,7 +119,7 @@ module.exports = {
 
           evaluated = nerdamer(expression, scope)
 
-          return evaluated.evaluate().toString()
+          return evaluated.evaluate().text(options.format, options.decimals)
           // return undefined
         }
         catch(e){

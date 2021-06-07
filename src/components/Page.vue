@@ -5,8 +5,22 @@
   v-model="contextmenu"
   >
     <div class="graph-paper">
-
+    
+    <a-space>
       <a-button @click="compute">Compute</a-button>
+      <a-select default-value="Decimal" style="width: 120px" @change="handleChangeNformat">
+        <a-select-option value="decimals">
+          Decimal
+        </a-select-option>
+        <a-select-option value="fractions">
+          Fraction
+        </a-select-option>
+        <a-select-option value="recurring">
+          Recurring
+        </a-select-option>
+      </a-select>
+      <a-input-number v-if="mathOptions.format == 'decimals'" id="inputNumber" v-model="mathOptions.decimals" :min="1" :max="10" />
+    </a-space>
 
       <Node 
       v-for="(node) in storage.equations"
@@ -57,6 +71,10 @@ export default {
       defaultEquation: {id: 0, x:0, y:0,  function: "", result: ""},
       mouseX: 0,
       mouseY: 0,
+      mathOptions: {
+        format: 'decimals',
+        decimals: 5,
+      },
       // The "File" that is open
       storage: {
         activeEquations: [0], // by IDs
@@ -64,9 +82,10 @@ export default {
           // ID: { attributes }
           {id: 0, x:20, y:20, function: "f(y) \\coloneq 3 \\cdot y", result: ""},
           {id: 1, x:20, y:60,  function: "f(3)", result: ""},
-          {id: 2, x:20, y:100,  function: "3*7", result: ""},
+          {id: 2, x:20, y:100,  function: "3.7847*7.873222", result: ""},
           {id: 3, x:20, y:200,  function: "g:3", result: ""},
           {id: 4, x:20, y:240,  function: "g+3", result: ""},
+          {id: 4, x:20, y:280,  function: "\\frac{4}{5}", result: ""},
         ]
       }
     }
@@ -155,7 +174,7 @@ export default {
         console.log(ascii, equation.function, nodeelement)
         
         // var val = calc.calculate(ascii) // equation.function
-        var val = calc.calculate(equation.function)
+        var val = calc.calculate(equation.function, this.mathOptions)
         console.log("Result:", val)
         equations[index].result = val
       })
@@ -165,6 +184,9 @@ export default {
       if (index > -1) {
         this.storage.equations.splice(index, 1);
       }
+    },
+    handleChangeNformat(value) {
+      this.mathOptions.format = value
     }
   },
 }
