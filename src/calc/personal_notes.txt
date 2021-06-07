@@ -1,0 +1,37 @@
+snells(n_1,\\theta_1,n_2):=\\sin^{-1}(\\frac{n_1\\cdot\\sin(\\theta_1)}{n_2})
+≔
+
+var LaTeX = 
+10214
+10795
+10910
+convertFromLaTeX
+this.tokenize = function (e) {
+
+
+                else if(token.value === 'coloneq') {
+                    retval += inBrackets(':=');
+                }
+
+
+            ':=': {
+                precedence: 0,
+                operator: ',',
+                action: 'function_assign',
+                prefix: false,
+                postfix: false,
+                leftAssoc: true
+            },
+
+
+f(y)\\coloneq3\\cdot y
+f(y)\\coloneq3y
+
+
+-2 \\sin{\\left( {{x}^{2}}-1\\right) }-\\frac{\cos{\\left( {{x}^{2}}-1\\right) }}{{{x}^{2}}}
+-2*sin(-1+x^2)-cos(-1+x^2)*x^(-2)
+
+\\frac{18 \\cdot x^{5}-4 \\cdot x^{3}+1}{a \\cdot b \\cdot c^{x}+4}-\\frac{a \\cdot b \\cdot c^{x} \\cdot \\mathrm{log}\\left(c\\right) \\cdot \\left(3 \\cdot x^{6}-x^{4}+x\\right)}{\\left(a \\cdot b \\cdot c^{x}+4\\right)^{2}}
+(-4*x^3+18*x^5+1)*(4+a*b*c^x)^(-1)-(-x^4+3*x^6+x)*(4+a*b*c^x)^(-2)*a*b*c^x*log(c)
+
+

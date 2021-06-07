@@ -1,6 +1,6 @@
 <template>
   <div id="grid-snap" ref="myid">
-    <a-dropdown v-model="contextmenu" :trigger="['click']">
+    <a-dropdown v-model="contextmenu" :trigger="['contextmenu']">
       <!-- <a-tooltip placement="right">
         <template slot="title">
           [{{id}}]  {{formula}} = {{result}}
@@ -105,11 +105,16 @@ export default {
         // })
         .on('tap', function() {
           EventBus.$emit('selected', id)
+          console.log("Mouse button:", event.button, event.x)
+          // parent.contextmenu = false
+          // if (event.button == 2) {
+          //   parent.contextmenu = true
+          // }
         })
-        // .on('doubletap', function (event) {
-        //   parent.contextmenu = true
-        //   event.preventDefault()
-        // })
+        .on('doubletap', function (event) {
+          // parent.contextmenu = true
+          event.preventDefault()
+        })
         .on('dragmove', function(event) {
           x += event.dx
           y += event.dy

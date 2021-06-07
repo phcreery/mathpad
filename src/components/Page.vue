@@ -1,7 +1,7 @@
 <template>
 <div :style="{height: '100%'}">
   <a-dropdown 
-  :trigger="['contextmenu']"
+  :trigger="contextmenutrigger"
   v-model="contextmenu"
   >
     <div class="graph-paper">
@@ -11,6 +11,7 @@
       <Node 
       v-for="(node) in storage.equations"
       ref="node"
+      class="node"
       :key="node.id" 
       :formula="node.function" 
       :isselected="storage.activeEquations.includes(node.id) ? true : false"
@@ -52,6 +53,7 @@ export default {
     return {
       // Right Click Menu active?
       contextmenu: false,
+      contextmenutrigger: ['contextmenu'],
       defaultEquation: {id: 0, x:0, y:0,  function: "", result: ""},
       mouseX: 0,
       mouseY: 0,
@@ -79,10 +81,19 @@ export default {
     .on('tap', function (event) {
       parent.storage.activeEquations = []
       parent.contextmenu = false
+      parent.contextmenutrigger = ['contextmenu']
       parent.mouseX = event.x
       parent.mouseY = event.y
-      console.log("Mouse button:", event.pointerId, event.button, event.x) // clientX
+      // console.log("Mouse button:", event.pointerId, event.button, event.x) // clientX
       event.preventDefault()
+    })
+    interact('.node')
+    .on('tap', function (event) {
+      console.log("shouldnt open")
+      parent.contextmenu = false
+      parent.contextmenutrigger = []
+      event.preventDefault()
+      event.stopPropagation()
     })
     EventBus.$on('selected', (id) => { this.selectNode(id) })
     EventBus.$on('changed', (changeinfo) => { this.changeNodeValue(changeinfo) })
