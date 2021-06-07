@@ -85,8 +85,8 @@ export default {
           {id: 2, x:20, y:100,  function: "3.7847*7.873222", result: ""},
           {id: 3, x:20, y:200,  function: "g:3", result: ""},
           {id: 4, x:20, y:240,  function: "g+3", result: ""},
-          {id: 4, x:20, y:280,  function: "\\frac{4}{5}", result: ""},
-          {id: 4, x:20, y:340,  function: "solve(4x=2,x)", result: ""},
+          {id: 5, x:20, y:280,  function: "\\frac{4}{5}", result: ""},
+          {id: 6, x:20, y:340,  function: "solve(4x=2,x)", result: ""},
         ]
       }
     }
@@ -105,15 +105,15 @@ export default {
       parent.mouseX = event.x
       parent.mouseY = event.y
       // console.log("Mouse button:", event.pointerId, event.button, event.x) // clientX
-      event.preventDefault()
+      // event.preventDefault()
     })
     interact('.node')
-    .on('tap', function (event) {
+    .on('tap', function () {
       console.log("shouldnt open")
       parent.contextmenu = false
       parent.contextmenutrigger = []
-      event.preventDefault()
-      event.stopPropagation()
+      // event.preventDefault()
+      // event.stopPropagation()
     })
     EventBus.$on('selected', (id) => { this.selectNode(id) })
     EventBus.$on('changed', (changeinfo) => { this.changeNodeValue(changeinfo) })
