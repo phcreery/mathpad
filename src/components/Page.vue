@@ -106,8 +106,8 @@ export default {
           {id: 13, x:300, y:240,  function: "\\operatorname{abs}(-2)", result: ""}, // \left|-3\right|
           {id: 14, x:300, y:280,  function: "\\left|-3\\right|  ", result: ""}, // \left|-3\right|
           {id: 15, x:400, y:280,  function: "|-3|  ", result: ""},
-          {id: 16, x:300, y:320,  function: "round(2.56)", result: ""},
-          {id: 17, x:300, y:360,  function: "\\operatorname{round}(2.56)", result: ""},
+          {id: 16, x:300, y:320,  function: "round(2.56,1)", result: ""},
+          {id: 17, x:300, y:360,  function: "\\operatorname{round}(2.56,1)", result: ""},
           
           {id: 18, x:600, y:20,  function: "lcm(3, 21)", result: ""},
           {id: 19, x:600, y:60,  function: "\\operatorname{lcm}(3, 21)", result: ""},
