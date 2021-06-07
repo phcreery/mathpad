@@ -113,7 +113,8 @@ module.exports = {
         return { text: undefined, LaTeX: undefined }
       }
       catch(e) { 
-        console.log('Error: Could not set function.</br>'+e.toString())
+        console.log('Error: Could not set function.</br>' + e.toString())
+        return { text: 'err', LaTeX: 'err'}
       }
     } else {
       var variableDeclaration = /^([a-z_][a-z\d_]*):(.+)$/gi.exec(expression);
@@ -133,7 +134,8 @@ module.exports = {
           return { text, LaTeX }
         }
         catch(e){
-          console.log('Something went wrong. Nerdamer could not parse expression!</br>'+e.toString())
+          console.log('Something went wrong. Nerdamer could not parse expression!</br>' + e.toString())
+          return { text: 'err', LaTeX: 'err'}
         } 
       }
       else {
@@ -160,11 +162,12 @@ module.exports = {
         }
         catch(e){
           console.log(e.stack);
-          console.log('Something went wrong. Nerdamer could not parse expression!</br>'+e.toString())
+          console.log('Something went wrong. Nerdamer could not parse expression!</br>' + e.toString())
+          return { text: 'err', LaTeX: 'err'}
         }
       }
     }
     
-    return undefined
+    // return undefined
   }
 }

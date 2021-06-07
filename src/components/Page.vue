@@ -218,10 +218,6 @@ export default {
         // var val = calc.calculate(ascii) // equation.function
         var val = calc.calculate(equation.function, this.mathOptions)
         console.log("Result:", val)
-        if (!val || !val.text || !val.LaTeX){
-          equations[index].result = 'err'
-          return
-        }
         if (this.outputFormat == 'string') {
           equations[index].result = val.text
         } else {
