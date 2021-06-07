@@ -86,6 +86,7 @@ export default {
           {id: 3, x:20, y:200,  function: "g:3", result: ""},
           {id: 4, x:20, y:240,  function: "g+3", result: ""},
           {id: 4, x:20, y:280,  function: "\\frac{4}{5}", result: ""},
+          {id: 4, x:20, y:340,  function: "solve(4x=2,x)", result: ""},
         ]
       }
     }

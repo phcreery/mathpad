@@ -80,7 +80,7 @@ module.exports = {
       
       //we never checked if this is in proper format for nerdamer so we'll just try and if nerdamer complains we'll let the person know
       try {
-        console.log(fnName, params, fnBody)
+        console.log("Name,Params,Body(convertFromLaTeX)", fnName, params, fnBody)
         evaluated = nerdamer.setFunction(fnName, params, fnBody);
         // return evaluated
         return undefined
@@ -97,6 +97,7 @@ module.exports = {
           var varValue = nerdamer.convertFromLaTeX(variableDeclaration[2]).toString()
           //set the value
           evaluated = nerdamer.setVar(varName, varValue);
+          console.log('setting', varName, 'to(convertFromLaTeX)', varValue)
           return nerdamer(varValue, scope).evaluate().toString()
           // return undefined
         }
@@ -107,16 +108,16 @@ module.exports = {
       else {
         try {
           //store the user expression so modifications don't get added
-          var user_expression = expression;
+          // var user_expression = expression;
           // Extract solve
-          var expr_w_solve = user_expression.match(/solve\((.+),\s*\w\)/);
-          if(expr_w_solve) {
-            user_expression = nerdamer.convertFromLaTeX(expr_w_solve[1]).toString()
-          } else {
-            user_expression = nerdamer.convertFromLaTeX(user_expression).toString()
-          }
-          console.log(expression, scope)
-
+          // var expr_w_solve = user_expression.match(/solve\((.+),\s*\w\)/);
+          // if(expr_w_solve) {
+          //   user_expression = nerdamer.convertFromLaTeX(expr_w_solve[1]).toString()
+          // } else {
+          //   user_expression = nerdamer.convertFromLaTeX(user_expression).toString()
+          // }
+          expression = nerdamer.convertFromLaTeX(expression).toString()
+          console.log('expression(convertFromLaTeX)', expression, scope)
           evaluated = nerdamer(expression, scope)
 
           return evaluated.evaluate().text(options.format, options.decimals)
