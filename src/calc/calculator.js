@@ -44,6 +44,17 @@ function interpretSpecialCommands(str) {
   var operatorsRegex = /\\operatorname\{*([^}]+?)\}/gi
   var strippedvalue = str.replace(operatorsRegex, '\\$1')
   console.log('stripped', strippedvalue)
+
+
+  // \left|\right| to abs()
+  var absRegex = /\\left\|/gi
+  strippedvalue = strippedvalue.replace(absRegex, 'abs(')
+  console.log('stripped', strippedvalue)
+
+  absRegex = /\\right\|/gi
+  strippedvalue = strippedvalue.replace(absRegex, ')')
+  console.log('stripped', strippedvalue)
+
   return strippedvalue
 
 }

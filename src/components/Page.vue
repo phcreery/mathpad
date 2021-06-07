@@ -96,21 +96,23 @@ export default {
           {id: 4, x:20, y:240,  function: "g+3", result: ""},
           {id: 5, x:20, y:280,  function: "\\frac{4}{5}", result: ""},
           {id: 6, x:20, y:340,  function: "solve(4x=2,x)", result: ""},
-          {id: 7, x:20, y:380,  function: "simplify((x^2+4*x-45)/(x^2+x-30))", result: ""},
+          {id: 7, x:20, y:400,  function: "simplify((x^2+4*x-45)/(x^2+x-30))", result: ""},
 
           {id: 8, x:300, y:20,  function: "fib(15)", result: ""},
           {id: 9, x:300, y:60,  function: "\\sqrt{a^2 + b^2}", result: ""},
           {id: 10, x:300, y:100,  function: "integrate(sec(x)^2, x)", result: ""}, //\int\sec(x),dx
           {id: 11, x:300, y:140,  function: "\\int(\\sec(x)^2),dx", result: ""}, //\int\sec(x),dx
           {id: 12, x:300, y:200,  function: "abs(-2)", result: ""},
-          {id: 13, x:300, y:240,  function: "\\operatorname{abs}(-2)", result: ""},
-          {id: 14, x:300, y:280,  function: "round(2.56)", result: ""},
-          {id: 15, x:300, y:320,  function: "\\operatorname{round}(2.56)", result: ""},
+          {id: 13, x:300, y:240,  function: "\\operatorname{abs}(-2)", result: ""}, // \left|-3\right|
+          {id: 14, x:300, y:280,  function: "\\left|-3\\right|  ", result: ""}, // \left|-3\right|
+          {id: 15, x:400, y:280,  function: "|-3|  ", result: ""},
+          {id: 16, x:300, y:320,  function: "round(2.56)", result: ""},
+          {id: 17, x:300, y:360,  function: "\\operatorname{round}(2.56)", result: ""},
           
-          {id: 16, x:600, y:20,  function: "lcm(3, 21)", result: ""},
-          {id: 17, x:600, y:60,  function: "\\operatorname{lcm}(3, 21)", result: ""},
-          {id: 18, x:600, y:100,  function: "factorial(13)", result: ""},
-          {id: 19, x:600, y:140,  function: "!13", result: ""},
+          {id: 18, x:600, y:20,  function: "lcm(3, 21)", result: ""},
+          {id: 19, x:600, y:60,  function: "\\operatorname{lcm}(3, 21)", result: ""},
+          {id: 20, x:600, y:100,  function: "factorial(13)", result: ""},
+          {id: 21, x:600, y:140,  function: "13!", result: ""},
 
         ]
       }
