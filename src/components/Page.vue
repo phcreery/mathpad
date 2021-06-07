@@ -21,10 +21,10 @@
       </a-select>
       <a-input-number v-if="mathOptions.format == 'decimals'" id="inputNumber" style="width: 60px" v-model="mathOptions.decimals" :min="1" :max="10" />
       <a-select default-value="String" style="width: 100px" @change="handleChangeOUTformat">
-        <a-select-option value="decimals">
+        <a-select-option value="string">
           String
         </a-select-option>
-        <a-select-option value="fractions">
+        <a-select-option value="LaTeX">
           LaTeX
         </a-select-option>
       </a-select>
@@ -41,6 +41,7 @@
       :y="node.y"
       :id="node.id"
       :result="node.result"
+      :format="outputFormat"
       />
 
     </div>
@@ -79,8 +80,9 @@ export default {
       defaultEquation: {id: 0, x:0, y:0,  function: "", result: ""},
       mouseX: 0,
       mouseY: 0,
+      outputFormat: 'string',
       mathOptions: {
-        format: 'decimals',
+        numberformat: 'decimals',
         decimals: 5,
       },
       // The "File" that is open
@@ -95,6 +97,7 @@ export default {
           {id: 4, x:20, y:240,  function: "g+3", result: ""},
           {id: 5, x:20, y:280,  function: "\\frac{4}{5}", result: ""},
           {id: 6, x:20, y:340,  function: "solve(4x=2,x)", result: ""},
+          {id: 7, x:20, y:380,  function: "simplify((x^2+4*x-45)/(x^2+x-30))", result: ""},
         ]
       }
     }
@@ -155,9 +158,8 @@ export default {
       var next = 1
       var inc = 1
       while(this.storage.equations.findIndex((element) => element.id == (next += inc)) > -1);
-      console.log('next', next)
+      console.log('next id', next)
       var newEquation = JSON.parse(JSON.stringify(this.defaultEquation))
-      console.log(newEquation, this.defaultEquation)
       newEquation.id = next
       // newEquation.x = event.clientX - 80 // pageX
       // newEquation.y = event.clientY - 100
@@ -167,8 +169,30 @@ export default {
       this.storage.equations.push(newEquation)
       // this.storage.equations[this.storage.equations.length] = newEquation
       this.contextmenu = false
-      // EventBus.$emit('focus', next)
+      this.storage.activeEquations = [next]
+      // this.$emit('init')
+      // while(this.$refs['node'].findIndex((element) => element.id == next) == -1);
+      setTimeout(() => { // setTimeout to put this into event queue
+        // executed after render
 
+        EventBus.$emit('focus', next)
+      }, 0)
+      // EventBus.$emit('focus', next)
+      console.log(this.storage.activeEquations)
+
+    },
+    deleteNode (id) {
+      var index = this.storage.equations.findIndex((element) => element.id == id)
+      if (index > -1) {
+        this.storage.equations.splice(index, 1);
+      }
+    },
+    handleChangeNformat(value) {
+      this.mathOptions.format = value
+    },
+    handleChangeOUTformat(value) {
+      this.outputFormat = value
+      this.compute()
     },
     compute () {
       // sort the equations be y position
@@ -185,18 +209,14 @@ export default {
         // var val = calc.calculate(ascii) // equation.function
         var val = calc.calculate(equation.function, this.mathOptions)
         console.log("Result:", val)
-        equations[index].result = val
+        if (this.outputFormat == 'string') {
+          equations[index].result = val.text
+        } else {
+          equations[index].result = val.LaTeX
+        }
+        
       })
     },
-    deleteNode (id) {
-      var index = this.storage.equations.findIndex((element) => element.id == id)
-      if (index > -1) {
-        this.storage.equations.splice(index, 1);
-      }
-    },
-    handleChangeNformat(value) {
-      this.mathOptions.format = value
-    }
   },
 }
 </script>

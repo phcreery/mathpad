@@ -55,9 +55,9 @@ function prepareExpression(str) {
 
 
 module.exports = {
-  calculate(LaTeX, options) { // modified for LaTeX input
+  calculate(inLaTeX, options) { // modified for LaTeX input
     // var txt = getText()
-    var expressionAndScope = prepareExpression(LaTeX)
+    var expressionAndScope = prepareExpression(inLaTeX)
     var expression = expressionAndScope[0]
     var scope = expressionAndScope[1]
     // var functionRegex = /^([a-z_][a-z\d_]*)\(([a-z_,\s]*)\):=(.+)$/gi //does not validate the expression
@@ -65,6 +65,8 @@ module.exports = {
     var functionDeclaration = functionRegex.exec(expression)
     console.log(JSON.stringify(expression), ' is function?', functionDeclaration)
     var evaluated
+    var text
+    var LaTeX
     
     //it might be a function declaration. If it is the scope object gets ignored
     if (functionDeclaration) {
@@ -82,8 +84,19 @@ module.exports = {
       try {
         console.log("Name,Params,Body(convertFromLaTeX)", fnName, params, fnBody)
         evaluated = nerdamer.setFunction(fnName, params, fnBody);
+
+        //generate the latex
+        LaTeX = fnName+ //parse the function name with nerdamer so we can get back some nice LaTeX
+                '('+ //do the same for the parameters
+                    params.map(function(x) {
+                        return nerdamer(x).toTeX();
+                    }).join(',')+
+                '):='+
+                nerdamer(fnBody).toTeX();
+
         // return evaluated
-        return undefined
+        // return undefined
+        return { text: undefined, LaTeX: undefined }
       }
       catch(e) { 
         console.log('Error: Could not set function.</br>'+e.toString())
@@ -97,9 +110,13 @@ module.exports = {
           var varValue = nerdamer.convertFromLaTeX(variableDeclaration[2]).toString()
           //set the value
           evaluated = nerdamer.setVar(varName, varValue);
+          
           console.log('setting', varName, 'to(convertFromLaTeX)', varValue)
-          return nerdamer(varValue, scope).evaluate().toString()
+          LaTeX = varName + ':' + nerdamer(varValue).toTeX();
+          text = nerdamer(varValue, scope).toString()
+          // return [text, LaTeX]
           // return undefined
+          return { text, LaTeX }
         }
         catch(e){
           console.log('Something went wrong. Nerdamer could not parse expression!</br>'+e.toString())
@@ -119,8 +136,10 @@ module.exports = {
           expression = nerdamer.convertFromLaTeX(expression).toString()
           console.log('expression(convertFromLaTeX)', expression, scope)
           evaluated = nerdamer(expression, scope)
-
-          return evaluated.evaluate().text(options.format, options.decimals)
+          evaluated = evaluated.evaluate()
+          text = evaluated.text(options.format, options.decimals)
+          LaTeX = evaluated.toTeX(options.format == 'decimal' ? 'decimals' : undefined)
+          return { text, LaTeX }
           // return undefined
         }
         catch(e){

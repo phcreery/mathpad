@@ -23,12 +23,17 @@
           <!-- v-model="initformula" -->
           {{ formula }}
         </mathlive-mathfield>
-        <!-- {{ result | ifdisplayableresult }} -->
-        <katex-element expression="=" v-if="result" style="display: inline-block"/>
-        <div v-katex="result" v-if="result" style="display: inline-block">
-          <!-- {{ result | ifdisplayableresult }} -->
-          <!-- {{result}} -->
+        <div v-if="(format == 'string') && result">
+          {{ result | ifdisplayableresult }}
         </div>
+        <div v-else-if="(format == 'LaTeX') && result">
+          <katex-element expression="=" style="display: inline-block"/>
+          <div v-katex="result" style="display: inline-block">
+            <!-- {{ result | ifdisplayableresult }} -->
+            <!-- {{result}} -->
+          </div>
+        </div>
+
         <p v-if="result">
           &nbsp;
         </p>
@@ -67,7 +72,8 @@ export default {
     result: String,
     isselected: Boolean,
     x: Number,
-    y: Number
+    y: Number,
+    format: String
   },
   data() {
     return {
@@ -78,7 +84,7 @@ export default {
   },
   mounted: function() {
     this.initformula = this.formula
-    // EventBus.$on('focus', (id) => { id == this.id ? this.$refs.mathfield.focus() : undefined }) // this.$refs.mathfield.focus()
+    EventBus.$on('focus', (id) => { console.log(id, this.id); if (id == this.id){console.log('this one', id); this.makeFocus() } }) // this.$refs.mathfield.focus()
     // console.log('ready')
     this.makeInteractable(this.$refs.myid)
   },
@@ -94,7 +100,7 @@ export default {
       interact(element)
         .draggable({
           allowFrom: '.node',
-          ignoreFrom: '.ML__mathlive',
+          ignoreFrom: '.ML__fieldcontainer', // .ML__mathlive
           modifiers: [
             interact.modifiers.snap({
               targets: [
@@ -133,6 +139,10 @@ export default {
           EventBus.$emit('moved', { id: id, x: x, y: y })
           event.target.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
         })
+    },
+    makeFocus() {
+      console.log('Focusing on', this.$refs.mathfield)
+      this.$refs.mathfield.focus()
     },
     ping: function() {
       console.log('ping', this.$refs.mathfield.getValue('ascii-math'))
@@ -178,6 +188,7 @@ export default {
   position: absolute;
   /* put equal sign to the right of the node */
   white-space: nowrap;
+  /* min-width: 40px; */
 }
 .selected {
   border: 1px;
@@ -216,7 +227,11 @@ export default {
 /* @import "../node_modules/katex/dist/katex.min.css"; */
 .ML__fieldcontainer {
   min-height: 19px !important;
+  min-width: 40px;
 }
+/* .ML__fieldcontainer_field {
+  min-width: 40px;
+} */
 .ML__keyboard {
   transition: none !important;
 }
