@@ -15,7 +15,7 @@
         <mathlive-mathfield
           id="mf"
           ref="mathfield"
-          :options="{ smartFence: false, virtualKeyboardMode: 'onfocus' }"
+          :options="{ smartFence: false, virtualKeyboardMode: 'onfocus', virtualKeyboards: 'all', virtualKeyboardTheme: 'apple', fontsDirectory:'./fonts' }"
           @focus="ping"
           @input="change"
         >
@@ -204,5 +204,11 @@ export default {
 <style>
 .ML__fieldcontainer {
   min-height: 19px !important;
+}
+.ML__keyboard {
+  transition: none !important;
+}
+body.ML__fonts-loading .ML__base {
+  visibility: visible !important;
 }
 </style>
