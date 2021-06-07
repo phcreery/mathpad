@@ -107,8 +107,10 @@ export default {
           {id: 14, x:300, y:280,  function: "round(2.56)", result: ""},
           {id: 15, x:300, y:320,  function: "\\operatorname{round}(2.56)", result: ""},
           
-          {id: 16, x:300, y:420,  function: "lcm(3, 21)", result: ""},
-          {id: 17, x:300, y:460,  function: "\\operatorname{lcm}(3, 21)", result: ""},
+          {id: 16, x:600, y:20,  function: "lcm(3, 21)", result: ""},
+          {id: 17, x:600, y:60,  function: "\\operatorname{lcm}(3, 21)", result: ""},
+          {id: 18, x:600, y:100,  function: "factorial(13)", result: ""},
+          {id: 19, x:600, y:140,  function: "!13", result: ""},
 
         ]
       }
@@ -175,7 +177,7 @@ export default {
       newEquation.id = next
       newEquation.x = this.mouseX - 50 // pageX
       newEquation.y = this.mouseY- 90
-      newEquation.function = "f(x):="
+      // newEquation.function = "f(x):="
       this.storage.equations.push(newEquation)
       this.contextmenu = false
       this.storage.activeEquations = [next]
@@ -216,6 +218,10 @@ export default {
         // var val = calc.calculate(ascii) // equation.function
         var val = calc.calculate(equation.function, this.mathOptions)
         console.log("Result:", val)
+        if (!val || !val.text || !val.LaTeX){
+          equations[index].result = 'err'
+          return
+        }
         if (this.outputFormat == 'string') {
           equations[index].result = val.text
         } else {
