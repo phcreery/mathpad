@@ -102,6 +102,13 @@ export default {
           {id: 9, x:300, y:60,  function: "\\sqrt{a^2 + b^2}", result: ""},
           {id: 10, x:300, y:100,  function: "integrate(sec(x)^2, x)", result: ""}, //\int\sec(x),dx
           {id: 11, x:300, y:140,  function: "\\int(\\sec(x)^2),dx", result: ""}, //\int\sec(x),dx
+          {id: 12, x:300, y:200,  function: "abs(-2)", result: ""},
+          {id: 13, x:300, y:240,  function: "\\operatorname{abs}(-2)", result: ""},
+          {id: 14, x:300, y:280,  function: "round(2.56)", result: ""},
+          {id: 15, x:300, y:320,  function: "\\operatorname{round}(2.56)", result: ""},
+          
+          {id: 16, x:300, y:420,  function: "lcm(3, 21)", result: ""},
+          {id: 17, x:300, y:460,  function: "\\operatorname{lcm}(3, 21)", result: ""},
 
         ]
       }

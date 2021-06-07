@@ -37,9 +37,21 @@ function extractExpression(str) {
     return [str, ''];
 }
 
+
+function interpretSpecialCommands(str) {
+  // remove \operatorname{sum}(2,4) and return \sum(2,4)
+  // is \ needed before sum?
+  var operatorsRegex = /\\operatorname\{*([^}]+?)\}/gi
+  var strippedvalue = str.replace(operatorsRegex, '\\$1')
+  console.log('stripped', strippedvalue)
+  return strippedvalue
+
+}
+
 //perform preparations before parsing. Extract variables and declarations
 function prepareExpression(str) {
     //the string will come in the form x+x, x=y, y=z
+  str = interpretSpecialCommands(str)
   var extracted = extractExpression(str)
   var expression = extracted[0]
   var scope = {};
@@ -53,6 +65,7 @@ function prepareExpression(str) {
   });
   return [expression, scope];
 }
+
 
 
 module.exports = {
