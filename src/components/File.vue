@@ -1,63 +1,72 @@
 <template>
-<div :style="{height: '100%'}">
-  <a-dropdown 
-  :trigger="contextmenutrigger"
-  v-model="contextmenu"
-  >
-    <div class="graph-paper page" ref="graphpage">
+  <div :style="{height: '100%'}">
     
-    <a-space>
-      <a-button-group>
-      <a-button @click="compute">Compute</a-button>
-      <!-- <a-button @click="compute" icon="delete"></a-button> -->
-      </a-button-group>
-      <a-select default-value="Decimal" style="width: 100px" @change="handleChangeNformat">
-        <a-select-option value="decimals">
-          Decimal
-        </a-select-option>
-        <a-select-option value="fractions">
-          Fraction
-        </a-select-option>
-        <a-select-option value="recurring">
-          Recurring
-        </a-select-option>
-      </a-select>
-      <a-input-number v-if="mathOptions.numberformat == 'decimals'" id="inputNumber" style="width: 60px" v-model="mathOptions.decimals" :min="1" :max="10" />
-      <a-select default-value="LaTeX" style="width: 100px" @change="handleChangeOUTformat">
-        <a-select-option value="string">
-          String
-        </a-select-option>
-        <a-select-option value="LaTeX">
-          LaTeX
-        </a-select-option>
-      </a-select>
-    </a-space>
+      <div class="graph-paper page"></div>
+      <div class="graph-paper page"></div>
+      <div class="graph-paper page"></div>
+    <a-dropdown 
+    :trigger="contextmenutrigger"
+    v-model="contextmenu"
+    >
+    <!-- a-dropdown container -->
+    <!-- <div> -->
+      <div v-if="mounted" class="equationarea" ref="contextarea" :style="userStyle">
+      
+      <a-space>
+        <a-button-group>
+        <a-button @click="compute">Compute</a-button>
+        <!-- <a-button @click="compute" icon="delete"></a-button> -->
+        </a-button-group>
+        <a-select default-value="Decimal" style="width: 100px" @change="handleChangeNformat">
+          <a-select-option value="decimals">
+            Decimal
+          </a-select-option>
+          <a-select-option value="fractions">
+            Fraction
+          </a-select-option>
+          <a-select-option value="recurring">
+            Recurring
+          </a-select-option>
+        </a-select>
+        <a-input-number v-if="mathOptions.numberformat == 'decimals'" id="inputNumber" style="width: 60px" v-model="mathOptions.decimals" :min="1" :max="10" />
+        <a-select default-value="LaTeX" style="width: 100px" @change="handleChangeOUTformat">
+          <a-select-option value="string">
+            String
+          </a-select-option>
+          <a-select-option value="LaTeX">
+            LaTeX
+          </a-select-option>
+        </a-select>
+      </a-space>
 
-      <Equation 
-      v-for="(node) in storage.equations"
-      ref="node"
-      class="node"
-      :key="node.id" 
-      :formula="node.function" 
-      :isselected="storage.activeEquations.includes(node.id) ? true : false"
-      :x="node.x"
-      :y="node.y"
-      :id="node.id"
-      :result="node.result"
-      :format="outputFormat"
-      />
+        <Equation 
+        v-for="(node) in storage.equations"
+        ref="node"
+        class="node"
+        :key="node.id" 
+        :formula="node.function" 
+        :isselected="storage.activeEquations.includes(node.id) ? true : false"
+        :x="node.x"
+        :y="node.y"
+        :id="node.id"
+        :result="node.result"
+        :format="outputFormat"
+        />
 
-    </div>
-    <a-menu slot="overlay">
-      <a-menu-item key="1" @click="addnode">
-        Add Equation
-      </a-menu-item>
-      <a-menu-item key="2" disabled>
-        Add Text Box
-      </a-menu-item>
-    </a-menu>
-  </a-dropdown>
-</div>
+      </div>
+      <!-- </div> -->
+      <a-menu slot="overlay">
+        <a-menu-item key="1" @click="addnode">
+          Add Equation
+        </a-menu-item>
+        <a-menu-item key="2" disabled>
+          Add Text Box
+        </a-menu-item>
+      </a-menu>
+      
+    </a-dropdown>
+
+  </div>
 
 </template>
 
@@ -77,6 +86,8 @@ export default {
   },
   data () {
     return {
+      mounted: false,
+      scrollPosition: null,
       contextmenu: false,
       contextmenutrigger: ['contextmenu'],
       defaultEquation: {id: 0, x:0, y:0,  function: "", result: ""},
@@ -89,6 +100,7 @@ export default {
       },
       // The "File" that is open
       storage: {
+        pages: 2,
         activeEquations: [0], // by IDs
         equations: [
           // ID: { attributes }
@@ -128,7 +140,8 @@ export default {
   },
   mounted: function () {
     // var parent = this
-    interact('.graph-paper')
+    window.addEventListener('scroll', this.updateScroll);
+    interact('.equationarea')
     .pointerEvents({
       // ignoreFrom: '.mathfield',
       ignoreFrom: '.node',
@@ -137,11 +150,11 @@ export default {
       this.storage.activeEquations = []
       this.contextmenu = false
       this.contextmenutrigger = ['contextmenu']
-      this.mouseX = event.x - this.$refs['graphpage'].offsetLeft
-      this.mouseY = event.y - this.$refs['graphpage'].offsetTop
+      this.mouseX = event.x - this.$refs['contextarea'].offsetLeft
+      this.mouseY = event.y - this.$refs['contextarea'].offsetTop + this.scrollPosition
       // parent. note : Since the refs is updated on hot-reload but this component is not re-mounted, the refs is lost
       // console.log("Mouse button:", event.pointerId, event.button, event.x) // clientX
-      // console.log(parent.$refs.graphpage.offsetTop, parent.$refs.graphpage.getBoundingClientRect().left)
+      console.log('scroll:',  this.scrollPosition ) // this.$refs['contextarea'].scrollTop
       // event.preventDefault()
     }.bind(this))
     interact('.node')
@@ -157,13 +170,23 @@ export default {
     EventBus.$on('changed', (changeinfo) => { this.changeNodeValue(changeinfo) })
     EventBus.$on('moved', (changeinfo) => { this.changeNodePosition(changeinfo) })
     EventBus.$on('delete', (id) => { this.deleteNode(id) })
+    this.setEquationAreaSize()
+    this.mounted = true
   },
   beforeDestroy () {
     // fix to $refs break on hot reload
-     interact('.graph-paper').unset()
+     interact('.equationarea').unset()
      interact('.node').unset()
   },
   methods: {
+    updateScroll() {
+      this.scrollPosition = window.scrollY
+    },
+    setEquationAreaSize(){
+      console.log('table size:')
+      console.log(this.$parent.$el.offsetWidth)
+      console.log(this.$parent.$el.offsetHeight)
+    },
     selectNode(id) {
       console.log("Selecting", id)
       this.storage.activeEquations = [id]
@@ -247,21 +270,43 @@ export default {
       })
     },
   },
+  computed: {
+    userStyle() {
+      console.log('user size:')
+      console.log(this.$parent.$el.offsetWidth)
+      console.log(this.$parent.$el.offsetHeight)
+      return {
+        width: this.$parent.$el.offsetWidth + 'px', 
+        height: this.$parent.$el.offsetHeight + 'px'
+      }
+    }
+  }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .graph-paper {
-  --back-color: #fffcf154;
+  /* --back-color: #fffcf154; */
+  --back-color: #FFFDF8;
   --front-color: #BED1D354;
-  width: 100%;
-  height: 100%;
+  /* width: 100%;
+  height: 100%; */
   background-color: var(--back-color);
   /* opacity: .4; */
   background-image: linear-gradient(var(--front-color) 2px, transparent 2px), linear-gradient(90deg, var(--front-color) 1px, transparent 2px), linear-gradient(var(--front-color) 0px, transparent 1px), linear-gradient(90deg, var(--front-color) 1px, var(--back-color) 1px);
   background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
   background-position: -4px -3px, -3px -4px, -2px -3px, -3px -2px;
   padding: 24px;
+  margin-bottom: 4px;
+}
+.equationarea{
+  position: absolute;
+  padding: 24px;
+  top: 24px;
+  /* right: 0; */
+  /* left: 0; */
+  /* width: 100%;
+  height: 100%; */
 }
 </style>

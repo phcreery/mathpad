@@ -1,13 +1,13 @@
 <template>
   <div id="app">
     <a-layout >
-      <a-layout-content class="content page center">
-        <div :style="{ background: '#fff', height: '100%'}" >
+      <a-layout-content class="content dwgtable center">
+        <div :style="{ height: '100%'}" >
           <File/>
         </div>
-        <a-button type="dashed" block style="margin-top: 4px;">
-      Add Page
-    </a-button>
+        <!-- <a-button type="dashed" block style="margin-top: 4px;">
+          Add Page
+        </a-button> -->
       </a-layout-content>
 
     </a-layout>
@@ -33,14 +33,15 @@ export default {
   margin-top: 24px;
   margin-bottom: 24px;
 }
-.page {
-  width: 21cm;
+.dwgtable {
+  width: 25cm;
   min-height: 29.7cm;
+  background: white;
 }
 .center {
   margin-left: auto;
   margin-right: auto;
-  border: 0.5px solid rgb(212, 212, 212);
+  /* border: 0.5px solid rgb(212, 212, 212); */
 }
 </style>
 
@@ -51,5 +52,7 @@ export default {
 .page {
   width: 21cm;
   min-height: 29.7cm;
+  border: 0.5px solid rgb(212, 212, 212);
+  /* background: white; */
 }
 </style>
