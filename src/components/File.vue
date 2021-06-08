@@ -4,10 +4,13 @@
   :trigger="contextmenutrigger"
   v-model="contextmenu"
   >
-    <div class="graph-paper">
+    <div class="graph-paper page" ref="graphpage">
     
     <a-space>
+      <a-button-group>
       <a-button @click="compute">Compute</a-button>
+      <!-- <a-button @click="compute" icon="delete"></a-button> -->
+      </a-button-group>
       <a-select default-value="Decimal" style="width: 100px" @change="handleChangeNformat">
         <a-select-option value="decimals">
           Decimal
@@ -30,7 +33,7 @@
       </a-select>
     </a-space>
 
-      <Node 
+      <Equation 
       v-for="(node) in storage.equations"
       ref="node"
       class="node"
@@ -59,7 +62,7 @@
 </template>
 
 <script>
-import Node from "./Node"
+import Equation from "./EqNode"
 import { EventBus } from './eventbus.js'
 import interact from 'interactjs'
 
@@ -68,7 +71,7 @@ const calc = require('../calc/calculator.js')
 export default {
   name: 'Page',
   components: {
-    Node
+    Equation
   },
   props: {
   },
@@ -111,41 +114,54 @@ export default {
           
           {id: 18, x:600, y:20,  function: "lcm(3, 21)", result: ""},
           {id: 19, x:600, y:60,  function: "\\operatorname{lcm}(3, 21)", result: ""},
-          {id: 20, x:600, y:100,  function: "factorial(13)", result: ""},
-          {id: 21, x:600, y:140,  function: "13!", result: ""},
+          {id: 20, x:600, y:100,  function: "factorial(4)", result: ""},
+          {id: 21, x:600, y:140,  function: "4!", result: ""},
+          {id: 22, x:20, y:460,  function: "diff(cos(x)*sin(x), x)", result: ""},
+          {id: 23, x:20, y:500,  function: "diff(x^3+a*x^3+x^2, x, 2)", result: ""},
+
+          {id: 24, x:600, y:460,  function: "g(x) \\coloneq 2 \\cdot x^{20}", result: ""},
+          {id: 25, x:600, y:500,  function: "\\frac{\\differentialD g(x)}{\\differentialD x}", result: ""},
 
         ]
       }
     }
   },
   mounted: function () {
-    var parent = this
+    // var parent = this
     interact('.graph-paper')
     .pointerEvents({
       // ignoreFrom: '.mathfield',
       ignoreFrom: '.node',
     })
     .on('tap', function (event) {
-      parent.storage.activeEquations = []
-      parent.contextmenu = false
-      parent.contextmenutrigger = ['contextmenu']
-      parent.mouseX = event.x
-      parent.mouseY = event.y
+      this.storage.activeEquations = []
+      this.contextmenu = false
+      this.contextmenutrigger = ['contextmenu']
+      this.mouseX = event.x - this.$refs['graphpage'].offsetLeft
+      this.mouseY = event.y - this.$refs['graphpage'].offsetTop
+      // parent. note : Since the refs is updated on hot-reload but this component is not re-mounted, the refs is lost
       // console.log("Mouse button:", event.pointerId, event.button, event.x) // clientX
+      // console.log(parent.$refs.graphpage.offsetTop, parent.$refs.graphpage.getBoundingClientRect().left)
       // event.preventDefault()
-    })
+    }.bind(this))
     interact('.node')
     .on('tap', function () {
       console.log("shouldnt open")
-      parent.contextmenu = false
-      parent.contextmenutrigger = []
+      this.contextmenu = false
+      this.contextmenutrigger = []
       // event.preventDefault()
       // event.stopPropagation()
-    })
+
+    }.bind(this))
     EventBus.$on('selected', (id) => { this.selectNode(id) })
     EventBus.$on('changed', (changeinfo) => { this.changeNodeValue(changeinfo) })
     EventBus.$on('moved', (changeinfo) => { this.changeNodePosition(changeinfo) })
     EventBus.$on('delete', (id) => { this.deleteNode(id) })
+  },
+  beforeDestroy () {
+    // fix to $refs break on hot reload
+     interact('.graph-paper').unset()
+     interact('.node').unset()
   },
   methods: {
     selectNode(id) {
@@ -177,8 +193,8 @@ export default {
       console.log('next id', next)
       var newEquation = JSON.parse(JSON.stringify(this.defaultEquation))
       newEquation.id = next
-      newEquation.x = this.mouseX - 50 // pageX
-      newEquation.y = this.mouseY- 90
+      newEquation.x = this.mouseX - 30 // pageX
+      newEquation.y = this.mouseY- 50
       // newEquation.function = "f(x):="
       this.storage.equations.push(newEquation)
       this.contextmenu = false
@@ -206,6 +222,7 @@ export default {
       this.compute()
     },
     compute () {
+      calc.flush()
       // sort the equations be y position
       this.storage.equations.sort((a, b) => (a.y > b.y) ? 1 : (a.y === b.y) ? ((a.x > b.x) ? 1 : -1) : -1)
       this.storage.equations.forEach((equation, index, equations) => {
@@ -217,6 +234,7 @@ export default {
         var ascii = JSON.parse(JSON.stringify(nodeelement.getValue("ascii-math")))
         console.log(ascii, equation.function, nodeelement)
         
+        equations[index].result = ''
         // var val = calc.calculate(ascii) // equation.function
         var val = calc.calculate(equation.function, this.mathOptions)
         console.log("Result:", val)

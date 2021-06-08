@@ -80,6 +80,9 @@ function prepareExpression(str) {
 
 
 module.exports = {
+  flush() {
+    nerdamer.flush()
+  },
   calculate(inLaTeX, options) { // modified for LaTeX input
     // var txt = getText()
     var expressionAndScope = prepareExpression(inLaTeX)
@@ -121,6 +124,7 @@ module.exports = {
 
         // return evaluated
         // return undefined
+        // console.log()
         return { text: undefined, LaTeX: undefined }
       }
       catch(e) { 

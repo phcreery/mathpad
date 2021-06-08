@@ -44,9 +44,6 @@
       <!-- </a-tooltip> -->
 
       <a-menu slot="overlay">
-        <a-menu-item @click="deletenode">
-          Delete
-        </a-menu-item>
         <a-menu-item @click="() => {contextmenu=false; copyToClipboard(formula)}">
           Copy Equation
         </a-menu-item>
@@ -55,6 +52,9 @@
         </a-menu-item>
         <a-menu-item @click="() => {contextmenu=false; getClipboard((text) => change(text)); return true}">
           Paste Equation
+        </a-menu-item>
+        <a-menu-item @click="deletenode">
+          Delete
         </a-menu-item>
       </a-menu>
     </a-dropdown>
