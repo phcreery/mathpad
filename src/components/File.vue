@@ -1,9 +1,10 @@
 <template>
-  <div :style="{height: '100%'}">
+  <div :style="{height: '100%'}" class="">
     
-      <div class="graph-paper page"></div>
-      <div class="graph-paper page"></div>
-      <div class="graph-paper page"></div>
+      <div class="page graph-paper"></div>
+      <!-- <div class="page graph-paper"></div> -->
+      <!-- <div class="page graph-paper"></div> -->
+      <!-- <div :style="{background: 'green', height: '100%'}">asdf</div> -->
     <a-dropdown 
     :trigger="contextmenutrigger"
     v-model="contextmenu"
@@ -273,7 +274,7 @@ export default {
   computed: {
     userStyle() {
       console.log('user size:')
-      console.log(this.$parent.$el.offsetWidth)
+      console.log(this.$parent.$el.offsetWidth, window.getComputedStyle(this.$parent.$el,null).getPropertyValue("width"))
       console.log(this.$parent.$el.offsetHeight)
       return {
         width: this.$parent.$el.offsetWidth + 'px', 
@@ -297,13 +298,13 @@ export default {
   background-image: linear-gradient(var(--front-color) 2px, transparent 2px), linear-gradient(90deg, var(--front-color) 1px, transparent 2px), linear-gradient(var(--front-color) 0px, transparent 1px), linear-gradient(90deg, var(--front-color) 1px, var(--back-color) 1px);
   background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
   background-position: -4px -3px, -3px -4px, -2px -3px, -3px -2px;
-  padding: 24px;
-  margin-bottom: 4px;
+  /* padding: 24px; */
+  /* margin-bottom: 4px; */
 }
 .equationarea{
   position: absolute;
   padding: 24px;
-  top: 24px;
+  top: calc(24px + 36px);
   /* right: 0; */
   /* left: 0; */
   /* width: 100%;
