@@ -5,29 +5,22 @@
         theme="light"
         mode="horizontal"
         :default-selected-keys="['2']"
-        :style="{ lineHeight: '36px' }"
+        :style="{ lineHeight: '36px', paddingLeft: '20px' }"
       >
 
         <a-sub-menu>
           <span slot="title" class="submenu-title-wrapper"
-            ><a-icon type="setting" />Navigation Three - Submenu</span
+            >File</span
           >
-          <a-menu-item-group title="Item 1">
             <a-menu-item key="setting:1">
-              Option 1
+              New
             </a-menu-item>
             <a-menu-item key="setting:2">
-              Option 2
+              Open
             </a-menu-item>
-          </a-menu-item-group>
-          <a-menu-item-group title="Item 2">
             <a-menu-item key="setting:3">
-              Option 3
+              Save as...
             </a-menu-item>
-            <a-menu-item key="setting:4">
-              Option 4
-            </a-menu-item>
-          </a-menu-item-group>
         </a-sub-menu>
 
       </a-menu>

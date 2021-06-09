@@ -1,25 +1,51 @@
 <template>
   <div class="footer">
     <a-row type="flex" justify="space-between">
-      <a-col :span="12">
+      <a-col :span="4">
       <a-space :style="{height: '36px'}">
         <div :style="{width: '20px'}"/>
         <!-- Auto Calculate -->
-        <a-icon type="calculator" />
-          <a-switch default-checked size="small" />
-          </a-space>
+        <!-- <a-icon type="calculator" /> -->
+        <a-button size="small" @click="compute"><a-icon type="calculator" /></a-button>
+        <a-switch size="small" disabled/>
+        </a-space>
       </a-col>
       <a-col>
         <a-space :style="{height: '36px'}">
-          <!-- ScratchPad -->
-          <a-icon type="export" />
-          <a-switch default-checked size="small" />
+          <!-- Number Format -->
+          <a-select default-value="Decimal" style="width: 100px" size="small" @change="handleChangeNformat" :getPopupContainer="trigger => trigger.parentNode">
+            <a-select-option value="decimals">
+              Decimal
+            </a-select-option>
+            <a-select-option value="fractions">
+              Fraction
+            </a-select-option>
+            <a-select-option value="recurring">
+              Recurring
+            </a-select-option>
+          </a-select>
+          <a-input-number v-if="mathOptions.numberformat == 'decimals'" id="inputNumber" style="width: 60px" size="small" @change="handleChangeDecimalPlaces" :min="1" :max="10" :default-value="mathOptions.decimals"/>
+          <a-select default-value="LaTeX" style="width: 100px" size="small" @change="handleChangeOUTformat" :getPopupContainer="trigger => trigger.parentNode">
+          <a-select-option value="string">
+            String
+          </a-select-option>
+          <a-select-option value="LaTeX">
+            LaTeX
+          </a-select-option>
+        </a-select>
+
 
           <div :style="{width: '20px'}"/>
 
-          <a-icon type="zoom-out" />
-          <a-slider id="test" :default-value="100" :style="{width: '100px', marginTop: '6px', marginBottom: '6px'}" />
-          <a-icon type="zoom-in" />
+          <!-- ScratchPad -->
+          <a-icon type="export" class="vert-icon"/>
+          <a-switch size="small" @change="handleChangeScratchPad"/>
+
+          <div :style="{width: '20px'}"/>
+
+          <a-icon type="zoom-out" class="vert-icon"/>
+          <a-slider id="test" :default-value="100" :style="{width: '100px', marginTop: '6px', marginBottom: '6px'}" disabled />
+          <a-icon type="zoom-in" class="vert-icon"/>
           <div :style="{width: '20px'}"/>
           
         </a-space>
@@ -30,7 +56,7 @@
 </template>
 
 <script>
-// import { EventBus } from './eventbus.js'
+import { EventBus } from './eventbus.js'
 
 export default {
   name: 'Page',
@@ -45,17 +71,39 @@ export default {
       mathOptions: {
         numberformat: 'decimals',
         decimals: 5,
+        outputFormat: 'LaTeX', 
       },
     }
   },
   mounted: function () {
-    
   },
   beforeDestroy () {
 
   },
   methods: {
-    
+    handleChangeNformat(value) {
+      this.mathOptions.numberformat = value
+      this.updateDocOptions()
+    },
+    handleChangeOUTformat(value) {
+      this.mathOptions.outputFormat = value
+      this.updateDocOptions()
+      this.compute()
+    },
+    handleChangeDecimalPlaces(value) {
+      this.mathOptions.decimals = value
+      this.updateDocOptions()
+    },
+    handleChangeScratchPad(value) {
+      console.log(value)
+      EventBus.$emit('togglescratch', value)
+    },
+    updateDocOptions(){
+      EventBus.$emit('doc-math-options', this.mathOptions)
+    },
+    compute() {
+      EventBus.$emit('compute')
+    }
   },
   computed: {
 
@@ -76,5 +124,11 @@ export default {
 }
 .ant-space-item {
   height: 24px !important;
+}
+.ant-select-dropdown-placement-bottomLeft {
+    all: initial !important;
+}
+.vert-icon {
+  vertical-align: -0.225em !important;
 }
 </style>

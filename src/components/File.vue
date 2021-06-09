@@ -1,44 +1,20 @@
 <template>
   <div :style="{height: '100%'}" class="">
     
-      <div class="page graph-paper"></div>
-      <!-- <div class="page graph-paper"></div> -->
-      <!-- <div class="page graph-paper"></div> -->
-      <!-- <div :style="{background: 'green', height: '100%'}">asdf</div> -->
-    <a-dropdown 
-    :trigger="contextmenutrigger"
-    v-model="contextmenu"
-    >
+      <div v-for="(page, index) in storage.pages" :key="index">
+        <!-- Space Between Pages -->
+        <div v-if="index > 0" :style="{height: '10px'}"></div>
+        <!-- Page background -->
+        <div class="page graph-paper" ></div>
+      </div>
+
     <!-- a-dropdown container -->
-    <!-- <div> -->
-      <div v-if="mounted" class="equationarea" ref="contextarea" :style="userStyle">
-      
-      <a-space>
-        <a-button-group>
-        <a-button @click="compute">Compute</a-button>
-        <!-- <a-button @click="compute" icon="delete"></a-button> -->
-        </a-button-group>
-        <a-select default-value="Decimal" style="width: 100px" @change="handleChangeNformat">
-          <a-select-option value="decimals">
-            Decimal
-          </a-select-option>
-          <a-select-option value="fractions">
-            Fraction
-          </a-select-option>
-          <a-select-option value="recurring">
-            Recurring
-          </a-select-option>
-        </a-select>
-        <a-input-number v-if="mathOptions.numberformat == 'decimals'" id="inputNumber" style="width: 60px" v-model="mathOptions.decimals" :min="1" :max="10" />
-        <a-select default-value="LaTeX" style="width: 100px" @change="handleChangeOUTformat">
-          <a-select-option value="string">
-            String
-          </a-select-option>
-          <a-select-option value="LaTeX">
-            LaTeX
-          </a-select-option>
-        </a-select>
-      </a-space>
+    <a-dropdown :trigger="contextmenutrigger" v-model="contextmenu" >
+
+      <!-- equationarea: where all the interaction and computation happens. Should fill up the entire easle area using -->
+      <!-- $parent.$el.offsetHeight & $parent.$el.offsetWidth -->
+      <div v-if="mounted" class="equationarea" ref="contextarea" 
+      :style="{width: $parent.$el.offsetWidth + 'px', height:$parent.$el.offsetHeight+'px'}" >
 
         <Equation 
         v-for="(node) in storage.equations"
@@ -51,11 +27,11 @@
         :y="node.y"
         :id="node.id"
         :result="node.result"
-        :format="outputFormat"
+        :format="mathOptions.outputFormat"
         />
 
       </div>
-      <!-- </div> -->
+
       <a-menu slot="overlay">
         <a-menu-item key="1" @click="addnode">
           Add Equation
@@ -94,10 +70,10 @@ export default {
       defaultEquation: {id: 0, x:0, y:0,  function: "", result: ""},
       mouseX: 0,
       mouseY: 0,
-      outputFormat: 'LaTeX',
       mathOptions: {
         numberformat: 'decimals',
         decimals: 5,
+        outputFormat: 'LaTeX', 
       },
       // The "File" that is open
       storage: {
@@ -140,38 +116,18 @@ export default {
     }
   },
   mounted: function () {
-    // var parent = this
-    window.addEventListener('scroll', this.updateScroll);
-    interact('.equationarea')
-    .pointerEvents({
-      // ignoreFrom: '.mathfield',
-      ignoreFrom: '.node',
-    })
-    .on('tap', function (event) {
-      this.storage.activeEquations = []
-      this.contextmenu = false
-      this.contextmenutrigger = ['contextmenu']
-      this.mouseX = event.x - this.$refs['contextarea'].offsetLeft
-      this.mouseY = event.y - this.$refs['contextarea'].offsetTop + this.scrollPosition
-      // parent. note : Since the refs is updated on hot-reload but this component is not re-mounted, the refs is lost
-      // console.log("Mouse button:", event.pointerId, event.button, event.x) // clientX
-      console.log('scroll:',  this.scrollPosition ) // this.$refs['contextarea'].scrollTop
-      // event.preventDefault()
-    }.bind(this))
-    interact('.node')
-    .on('tap', function () {
-      console.log("shouldnt open")
-      this.contextmenu = false
-      this.contextmenutrigger = []
-      // event.preventDefault()
-      // event.stopPropagation()
-
-    }.bind(this))
+    this.addInteraction()
     EventBus.$on('selected', (id) => { this.selectNode(id) })
     EventBus.$on('changed', (changeinfo) => { this.changeNodeValue(changeinfo) })
     EventBus.$on('moved', (changeinfo) => { this.changeNodePosition(changeinfo) })
     EventBus.$on('delete', (id) => { this.deleteNode(id) })
-    this.setEquationAreaSize()
+    EventBus.$on('doc-math-options', (mathOptions) => { this.mathOptions =  mathOptions})
+    EventBus.$on('compute', () => { this.compute() })
+
+    EventBus.$on('togglescratch', () => { this.removeInteraction(); this.addInteraction() })
+    EventBus.$on('addpage', () => { console.log('new page'); this.storage.pages += 1 })
+
+    // this.readEquationAreaSize()
     this.mounted = true
   },
   beforeDestroy () {
@@ -180,10 +136,47 @@ export default {
      interact('.node').unset()
   },
   methods: {
+    addInteraction() {
+      // var parent = this
+      window.addEventListener('scroll', this.updateScroll);
+      
+      interact('.equationarea')
+      .pointerEvents({
+        // ignoreFrom: '.mathfield',
+        ignoreFrom: '.node',
+      })
+      .on('tap', function (event) {
+        this.storage.activeEquations = []
+        this.contextmenu = false
+        this.contextmenutrigger = ['contextmenu']
+        this.mouseX = event.x - this.$refs['contextarea'].offsetLeft
+        this.mouseY = event.y - this.$refs['contextarea'].offsetTop + this.scrollPosition
+        // parent. note : Since the refs is updated on hot-reload but this component is not re-mounted, the refs is lost
+        // console.log("Mouse button:", event.pointerId, event.button, event.x) // clientX
+        console.log('scroll:',  this.scrollPosition ) // this.$refs['contextarea'].scrollTop
+        // event.preventDefault()
+      }.bind(this))
+
+      interact('.node')
+      .on('tap', function () {
+        console.log("shouldnt open")
+        this.contextmenu = false
+        this.contextmenutrigger = []
+        // event.preventDefault()
+        // event.stopPropagation()
+
+      }.bind(this))
+      this.readEquationAreaSize()
+    },
+    removeInteraction() {
+      interact('.equationarea').unset()
+      interact('.node').unset()
+      this.readEquationAreaSize()
+    },
     updateScroll() {
       this.scrollPosition = window.scrollY
     },
-    setEquationAreaSize(){
+    readEquationAreaSize(){
       console.log('table size:')
       console.log(this.$parent.$el.offsetWidth)
       console.log(this.$parent.$el.offsetHeight)
@@ -242,7 +235,7 @@ export default {
       this.mathOptions.numberformat = value
     },
     handleChangeOUTformat(value) {
-      this.outputFormat = value
+      this.mathOptions.outputFormat = value
       this.compute()
     },
     compute () {
@@ -262,7 +255,7 @@ export default {
         // var val = calc.calculate(ascii) // equation.function
         var val = calc.calculate(equation.function, this.mathOptions)
         console.log("Result:", val)
-        if (this.outputFormat == 'string') {
+        if (this.mathOptions.outputFormat == 'string') {
           equations[index].result = val.text
         } else {
           equations[index].result = val.LaTeX
@@ -272,15 +265,6 @@ export default {
     },
   },
   computed: {
-    userStyle() {
-      console.log('user size:')
-      console.log(this.$parent.$el.offsetWidth, window.getComputedStyle(this.$parent.$el,null).getPropertyValue("width"))
-      console.log(this.$parent.$el.offsetHeight)
-      return {
-        width: this.$parent.$el.offsetWidth + 'px', 
-        height: this.$parent.$el.offsetHeight + 'px'
-      }
-    }
   }
 }
 </script>
@@ -305,9 +289,5 @@ export default {
   position: absolute;
   padding: 24px;
   top: calc(24px + 36px);
-  /* right: 0; */
-  /* left: 0; */
-  /* width: 100%;
-  height: 100%; */
 }
 </style>
