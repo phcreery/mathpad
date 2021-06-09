@@ -1,9 +1,6 @@
-// require('./nerdamer/nerdamer.core.js')
-// require('./nerdamer/Algebra.js')
-// require('./nerdamer/Calculus.js')
-// require('./nerdamer/Solve.js')
-// require('./nerdamer/Extra.js')
-const nerdamer = require('./nerdamer/all');
+// const nerdamer = require('./nerdamer/all');
+
+const nerdamer = require('nerdamer/all');  // cannot be const, nerdamer object is updated below
 
 //Get the expression from the user input. The expression will come in the form expression, x=a, y=b, ...
 //the problem becomes that the user might input some_function(param1, param2) , x=a, y=b
@@ -36,7 +33,6 @@ function extractExpression(str) {
 
     return [str, ''];
 }
-
 
 function interpretSpecialCommands(str) {
   // remove \operatorname{sum}(2,4) and return \sum(2,4)

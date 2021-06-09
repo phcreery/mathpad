@@ -28,6 +28,10 @@
         :id="node.id"
         :result="node.result"
         :format="mathOptions.outputFormat"
+        v-on:selected="(id) => selectNode(id)"
+        v-on:changed="changeinfo => changeNodeValue(changeinfo)"
+        v-on:moved="(changeinfo) => changeNodePosition(changeinfo)"
+        v-on:delete="(id) => deleteNode(id)"
         />
 
       </div>
@@ -57,6 +61,10 @@
 import Equation from "./EqNode"
 import { EventBus } from './eventbus.js'
 import interact from 'interactjs'
+
+// import * as Selection from "@simonwep/selection-js";
+// import Selection from "https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.mjs"
+
 
 const calc = require('../calc/calculator.js')
 
@@ -123,10 +131,12 @@ export default {
   },
   mounted: function () {
     this.addInteraction()
-    EventBus.$on('selected', (id) => { this.selectNode(id) })
-    EventBus.$on('changed', (changeinfo) => { this.changeNodeValue(changeinfo) })
-    EventBus.$on('moved', (changeinfo) => { this.changeNodePosition(changeinfo) })
-    EventBus.$on('delete', (id) => { this.deleteNode(id) })
+
+    // EventBus.$on('selected', (id) => { this.selectNode(id) })
+    // EventBus.$on('changed', (changeinfo) => { this.changeNodeValue(changeinfo) })
+    // EventBus.$on('moved', (changeinfo) => { this.changeNodePosition(changeinfo) })
+    // EventBus.$on('delete', (id) => { this.deleteNode(id) })
+
     EventBus.$on('doc-math-options', (mathOptions) => { this.mathOptions =  mathOptions})
     EventBus.$on('compute', () => { this.compute() })
 

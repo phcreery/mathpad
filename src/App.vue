@@ -62,6 +62,7 @@ export default {
   width: 21cm;
   min-height: 29.7cm;
   background: white;
+  border: 0.5px solid rgb(212, 212, 212);
 }
 .withscratchpad {
   width: 90vw !important;
