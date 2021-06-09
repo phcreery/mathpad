@@ -8,6 +8,7 @@
         <div :style="{ height: '100%'}" >
           <File/>
         </div>
+        
         <a-button type="dashed" block style="margin-top: 4px;" @click="addpage">
           Add Page
         </a-button>

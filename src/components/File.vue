@@ -3,7 +3,7 @@
     
       <div v-for="(page, index) in storage.pages" :key="index">
         <!-- Space Between Pages -->
-        <div v-if="index > 0" :style="{height: '10px'}"></div>
+        <div v-if="index > 0" :style="{height: '12px'}"></div>
         <!-- Page background -->
         <div class="page graph-paper" ></div>
       </div>
@@ -38,6 +38,12 @@
         </a-menu-item>
         <a-menu-item key="2" disabled>
           Add Text Box
+        </a-menu-item>
+        <a-menu-item key="3" @click="()=>this.storage.pages += 1">
+          Add Page
+        </a-menu-item>
+        <a-menu-item key="4" @click="()=>this.storage.pages -= 1">
+          Delete Page
         </a-menu-item>
       </a-menu>
       

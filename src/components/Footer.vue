@@ -6,7 +6,7 @@
         <div :style="{width: '20px'}"/>
         <!-- Auto Calculate -->
         <!-- <a-icon type="calculator" /> -->
-        <a-button size="small" @click="compute"><a-icon type="calculator" /></a-button>
+        <a-button size="small" type="primary" @click="compute"><a-icon type="calculator" /></a-button>
         <a-switch size="small" disabled/>
         </a-space>
       </a-col>
