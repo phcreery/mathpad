@@ -1,15 +1,29 @@
 <template>
   <div class="footer">
     <a-row type="flex" justify="space-between">
+
       <a-col :span="4">
-      <a-space :style="{height: '36px'}">
-        <div :style="{width: '20px'}"/>
-        <!-- Auto Calculate -->
-        <!-- <a-icon type="calculator" /> -->
-        <a-button size="small" type="primary" @click="compute"><a-icon type="calculator" /></a-button>
-        <a-switch size="small" disabled/>
-        </a-space>
+          <a-space :style="{height: '36px'}">
+          
+          <div :style="{width: '20px'}"/>
+            <!-- <a-icon type="calculator" /> -->
+          <a-tooltip mouseEnterDelay="1">
+            <template slot="title">
+              Calculate
+            </template>
+            <a-button size="small" type="primary" @click="compute"><a-icon type="calculator" /></a-button>
+          </a-tooltip>
+          <!-- Auto Calculate -->
+          <a-tooltip>
+            <template slot="title">
+              Auto Calculate
+            </template>
+            <a-switch size="small" disabled/>
+          </a-tooltip>
+          </a-space>
+
       </a-col>
+
       <a-col>
         <a-space :style="{height: '36px'}">
           <!-- Number Format -->
@@ -26,20 +40,27 @@
           </a-select>
           <a-input-number v-if="mathOptions.numberformat == 'decimals'" id="inputNumber" style="width: 60px" size="small" @change="handleChangeDecimalPlaces" :min="1" :max="10" :default-value="mathOptions.decimals"/>
           <a-select default-value="LaTeX" style="width: 100px" size="small" @change="handleChangeOUTformat" :getPopupContainer="trigger => trigger.parentNode">
-          <a-select-option value="string">
-            String
-          </a-select-option>
-          <a-select-option value="LaTeX">
-            LaTeX
-          </a-select-option>
-        </a-select>
+            <a-select-option value="string">
+              String
+            </a-select-option>
+            <a-select-option value="LaTeX">
+              LaTeX
+            </a-select-option>
+          </a-select>
 
 
           <div :style="{width: '20px'}"/>
 
           <!-- ScratchPad -->
-          <a-icon type="export" class="vert-icon"/>
-          <a-switch size="small" @change="handleChangeScratchPad"/>
+          <a-tooltip>
+            <template slot="title">
+              Scratch Pad
+            </template>
+            <a-space>
+              <a-icon type="export" class="vert-icon"/>
+              <a-switch size="small" @change="handleChangeScratchPad"/>
+            </a-space>
+          </a-tooltip>
 
           <div :style="{width: '20px'}"/>
 
