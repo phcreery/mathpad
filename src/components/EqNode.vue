@@ -64,7 +64,7 @@
 <script>
 import interact from 'interactjs'
 
-import { EventBus } from './eventbus.js'
+// import { EventBus } from './eventbus.js'
 
 export default {
   name: 'Node',
@@ -88,7 +88,8 @@ export default {
   },
   mounted: function() {
     this.initformula = this.formula
-    EventBus.$on('focus', (id) => { if (id == this.id) this.makeFocus() })
+    // EventBus.$on('focus', (id) => { if (id == this.id) this.makeFocus() })
+    this.$on('focus', (id) => { if (id == this.id) this.makeFocus() })
     this.makeInteractable(this.$refs.myid)
   },
   methods: {
@@ -98,7 +99,7 @@ export default {
       var y = this.y
       var id = this.id
       element.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px)'
-      // var parent = this
+      // var parent = this // alternative to .bind(this)
 
       interact(element)
         .draggable({
@@ -124,23 +125,26 @@ export default {
         //   ignoreFrom: '.ML__mathlive', // ".ML__fieldcontainer"  [no-pointer-event]
         // })
         .on('tap', function() {
-          EventBus.$emit('selected', id)
+          // EventBus.$emit('selected', id)
+          this.$emit('selected', id)
           console.log("Mouse button:", event.button, event.x)
           // parent.contextmenu = false
           // if (event.button == 2) {
           //   parent.contextmenu = true
           // }
-        })
+        }.bind(this))
         .on('doubletap', function (event) {
           event.preventDefault()
         })
         .on('dragmove', function(event) {
           x += event.dx
           y += event.dy
-          EventBus.$emit('selected', id)
-          EventBus.$emit('moved', { id: id, x: x, y: y })
+          // EventBus.$emit('selected', id)
+          // EventBus.$emit('moved', { id: id, x: x, y: y })
+          this.$emit('selected', id)
+          this.$emit('moved', { id: id, x: x, y: y })
           event.target.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
-        })
+        }.bind(this))
     },
     makeFocus() {
       console.log('Focusing on', this.$refs.mathfield)
@@ -148,16 +152,19 @@ export default {
     },
     ping: function() {
       console.log('ping', this.$refs.mathfield.getValue('ascii-math'))
-      EventBus.$emit('selected', this.id)
+      // EventBus.$emit('selected', this.id)
+      this.$emit('selected', this.id)
     },
     change: function(event) {
       console.log('changed to', event, typeof event)
-      EventBus.$emit('changed', { id: this.id, to: event })
-      // this.$emit('init')
+      // EventBus.$emit('changed', { id: this.id, to: event })
+      this.$emit('changed', { id: this.id, to: event })
+      // this.$emit('init') // refresh
       this.localformula = event
     },
     deletenode: function() {
-      EventBus.$emit('delete', this.id)
+      // EventBus.$emit('delete', this.id)
+      this.$emit('delete', this.id)
     },
     getValue(type) {
       console.log('getting')
