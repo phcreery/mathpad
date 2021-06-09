@@ -2,38 +2,6 @@
 
 const nerdamer = require('nerdamer/all');  // cannot be const, nerdamer object is updated below
 
-//Get the expression from the user input. The expression will come in the form expression, x=a, y=b, ...
-//the problem becomes that the user might input some_function(param1, param2) , x=a, y=b
-//doing a split by the comma would yield the undesired result. This method walks the string and looks for an open bracket
-//and then a close bracket. If none is found we're golden and it returns the string. If one is found then it looks 
-//for a close bracket. Any comma after that has to be the variable declarations
-
-//Note: I cannot use a regex for example diff(cos(x), x). A regex cannot check for matching brackets. Recursively maybe but 
-//that's tricky with commas
-function extractExpression(str) {
-    /*
-    var match = variable_regex.exec(str);
-    if(match) 
-        return [match[1], match[3]];
-    return [str, ''];
-    */
-  
-    // var l = str.length,
-    //     openBrackets = 0,
-    //     retval;
-    // for(var i=0; i<l; i++) {
-    //     var ch = str.charAt(i);
-    //     if(ch === '(' || ch === '[') openBrackets++; //record and open brackets
-    //     if(ch === ')' || ch === ']') openBrackets--; //close the bracket
-    //     if(ch === ',' && !openBrackets) {
-    //         retval = [str.substr(0, i), str.substr(i+1, l)];
-    //         return retval;
-    //     }
-    // }
-
-    return [str, ''];
-}
-
 function interpretSpecialCommands(str) {
   // remove \operatorname{sum}(2,4) and return \sum(2,4)
   // is \ needed before sum?
@@ -57,19 +25,9 @@ function interpretSpecialCommands(str) {
 
 //perform preparations before parsing. Extract variables and declarations
 function prepareExpression(str) {
-    //the string will come in the form x+x, x=y, y=z
   str = interpretSpecialCommands(str)
-  var extracted = extractExpression(str)
-  var expression = extracted[0]
+  var expression = str
   var scope = {};
-  extracted[1].split(',').map(function(x) {
-      x = x.trim(); //remove white space at both ends
-      var parts = x.split('='),
-          varname = parts[0],
-          value = parts[1];
-      if(nerdamer.validVarName(varname) && typeof value !== 'undefined')
-          scope[varname] = parts[1];
-  });
   return [expression, scope];
 }
 
