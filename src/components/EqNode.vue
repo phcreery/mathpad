@@ -7,50 +7,74 @@
           <a-icon type="setting" @click="()=>{}"/>
         </template> -->
 
-      <div
-        no-pointer-event
-        class="node"
-        :class="[isselected ? 'selected' : 'notselected']"
-      >
-      <!-- put a 4px space between node, =, result -->
-      <a-space :size="4">
-        <mathlive-mathfield
-          id="mf"
-          ref="mathfield"
-          :options="{ smartFence: false, virtualKeyboardMode: 'onfocus', virtualKeyboards: 'all', virtualKeyboardTheme: 'apple', fontsDirectory:'./fonts' }"
-          @focus="ping"
-          @input="change"
-          v-model="localformula"
-        >
-          {{ formula }}
-        </mathlive-mathfield>
-        <div v-if="(format == 'string') && result">
-          {{ result | ifdisplayableresult }}
-        </div>
-        <div v-else-if="(format == 'LaTeX') && result">
-          <katex-element expression="=" style="display: inline-block"/>
-          <div v-katex="result" style="display: inline-block">
-            <!-- {{ result | ifdisplayableresult }} -->
-            <!-- {{result}} -->
+      <div no-pointer-event class="node" :class="[isselected ? 'selected' : 'notselected']">
+        <!-- put a 4px space between node, =, result -->
+        <a-space :size="4">
+          <mathlive-mathfield
+            id="mf"
+            ref="mathfield"
+            :options="{
+              smartFence: false,
+              virtualKeyboardMode: 'onfocus',
+              virtualKeyboards: 'all',
+              virtualKeyboardTheme: 'apple',
+              fontsDirectory: './fonts'
+            }"
+            @focus="ping"
+            @input="change"
+            v-model="localformula"
+          >
+            {{ formula }}
+          </mathlive-mathfield>
+          <div v-if="format == 'string' && result">
+            {{ result | ifdisplayableresult }}
           </div>
-        </div>
+          <div v-else-if="format == 'LaTeX' && result">
+            <katex-element expression="=" style="display: inline-block" />
+            <div v-katex="result" style="display: inline-block">
+              <!-- {{ result | ifdisplayableresult }} -->
+              <!-- {{result}} -->
+            </div>
+          </div>
 
-        <p v-if="result">
-          &nbsp;
-        </p>
+          <p v-if="result">
+            &nbsp;
+          </p>
         </a-space>
       </div>
 
       <!-- </a-tooltip> -->
 
       <a-menu slot="overlay">
-        <a-menu-item @click="() => {contextmenu=false; copyToClipboard(formula)}">
+        <a-menu-item
+          @click="
+            () => {
+              contextmenu = false
+              copyToClipboard(formula)
+            }
+          "
+        >
           Copy Equation
         </a-menu-item>
-        <a-menu-item @click="() => {contextmenu=false; copyToClipboard(result)}">
+        <a-menu-item
+          @click="
+            () => {
+              contextmenu = false
+              copyToClipboard(result)
+            }
+          "
+        >
           Copy Result
         </a-menu-item>
-        <a-menu-item @click="() => {contextmenu=false; getClipboard((text) => change(text)); return true}">
+        <a-menu-item
+          @click="
+            () => {
+              contextmenu = false
+              getClipboard(text => change(text))
+              return true
+            }
+          "
+        >
           Paste Equation
         </a-menu-item>
         <a-menu-item @click="deletenode">
@@ -68,8 +92,7 @@ import interact from 'interactjs'
 
 export default {
   name: 'Node',
-  components: {
-  },
+  components: {},
   props: {
     id: Number,
     formula: String,
@@ -89,7 +112,9 @@ export default {
   mounted: function() {
     this.initformula = this.formula
     // EventBus.$on('focus', (id) => { if (id == this.id) this.makeFocus() })
-    this.$on('focus', (id) => { if (id == this.id) this.makeFocus() })
+    this.$on('focus', id => {
+      if (id == this.id) this.makeFocus()
+    })
     this.makeInteractable(this.$refs.myid)
   },
   methods: {
@@ -107,9 +132,7 @@ export default {
           ignoreFrom: '.ML__fieldcontainer', // .ML__mathlive
           modifiers: [
             interact.modifiers.snap({
-              targets: [
-                interact.snappers.grid({ x: this.gridSize, y: this.gridSize })
-              ],
+              targets: [interact.snappers.grid({ x: this.gridSize, y: this.gridSize })],
               range: Infinity,
               relativePoints: [{ x: 0, y: 0 }]
             }),
@@ -124,27 +147,33 @@ export default {
         // .pointerEvents({
         //   ignoreFrom: '.ML__mathlive', // ".ML__fieldcontainer"  [no-pointer-event]
         // })
-        .on('tap', function() {
-          // EventBus.$emit('selected', id)
-          this.$emit('selected', id)
-          console.log("Mouse button:", event.button, event.x)
-          // parent.contextmenu = false
-          // if (event.button == 2) {
-          //   parent.contextmenu = true
-          // }
-        }.bind(this))
-        .on('doubletap', function (event) {
+        .on(
+          'tap',
+          function() {
+            // EventBus.$emit('selected', id)
+            this.$emit('selected', id)
+            console.log('Mouse button:', event.button, event.x)
+            // parent.contextmenu = false
+            // if (event.button == 2) {
+            //   parent.contextmenu = true
+            // }
+          }.bind(this)
+        )
+        .on('doubletap', function(event) {
           event.preventDefault()
         })
-        .on('dragmove', function(event) {
-          x += event.dx
-          y += event.dy
-          // EventBus.$emit('selected', id)
-          // EventBus.$emit('moved', { id: id, x: x, y: y })
-          this.$emit('selected', id)
-          this.$emit('moved', { id: id, x: x, y: y })
-          event.target.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
-        }.bind(this))
+        .on(
+          'dragmove',
+          function(event) {
+            x += event.dx
+            y += event.dy
+            // EventBus.$emit('selected', id)
+            // EventBus.$emit('moved', { id: id, x: x, y: y })
+            this.$emit('selected', id)
+            this.$emit('moved', { id: id, x: x, y: y })
+            event.target.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
+          }.bind(this)
+        )
     },
     makeFocus() {
       console.log('Focusing on', this.$refs.mathfield)
@@ -171,22 +200,22 @@ export default {
       return this.$refs.mathfield.getValue(type)
     },
     copyToClipboard(text) {
-      var dummy = document.createElement("textarea");
+      var dummy = document.createElement('textarea')
       // to avoid breaking orgain page when copying more words
       // cant copy when adding below this code
       // dummy.style.display = 'none'
-      document.body.appendChild(dummy);
+      document.body.appendChild(dummy)
       //Be careful if you use texarea. setAttribute('value', value), which works with "input" does not work with "textarea". – Eduard
-      dummy.value = text;
-      dummy.select();
-      document.execCommand("copy");
-      document.body.removeChild(dummy);
+      dummy.value = text
+      dummy.select()
+      document.execCommand('copy')
+      document.body.removeChild(dummy)
     },
     getClipboard(cb) {
       var text
-      navigator.clipboard.readText().then((text) => cb(text));
+      navigator.clipboard.readText().then(text => cb(text))
       // const clipboardItems = await navigator.clipboard.read();
-      console.log(text);
+      console.log(text)
       // return text
     }
   },
@@ -245,8 +274,7 @@ export default {
   border-radius: 5px;
   border: 1px solid #000;
 
-  font-family: 'Source Code Pro', Menlo, 'Bitstream Vera Sans Mono', Monaco,
-    Courier, 'Andale Mono', monospace;
+  font-family: 'Source Code Pro', Menlo, 'Bitstream Vera Sans Mono', Monaco, Courier, 'Andale Mono', monospace;
   color: #f0c674;
   background: #35434e;
 }

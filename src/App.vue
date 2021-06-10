@@ -1,19 +1,19 @@
 <template>
   <div id="app">
-    <a-layout >
-      <Header/>
+    <a-layout>
+      <Header />
       <!-- <Sider/> -->
       <!-- class="content dwgtable withscratchpad center"  -->
       <a-layout-content class="content dwgtable center" :class="{ withscratchpad: scratchpad }">
-        <div :style="{ height: '100%'}" >
-          <File/>
+        <div :style="{ height: '100%' }">
+          <File />
         </div>
-        
+
         <a-button type="dashed" block style="margin-top: 4px;" @click="addpage">
           Add Page
         </a-button>
       </a-layout-content>
-      <Footer/>
+      <Footer />
     </a-layout>
   </div>
 </template>
@@ -34,13 +34,15 @@ export default {
     Header,
     Footer
   },
-  data () {
+  data() {
     return {
       scratchpad: false
     }
   },
-  mounted: function () {
-    EventBus.$on('togglescratch', (value) => { this.scratchpad = value })
+  mounted: function() {
+    EventBus.$on('togglescratch', value => {
+      this.scratchpad = value
+    })
   },
   methods: {
     addpage() {

@@ -1,6 +1,6 @@
 // const nerdamer = require('./nerdamer/all');
 
-const nerdamer = require('nerdamer/all');  // cannot be const, nerdamer object is updated below
+const nerdamer = require('nerdamer/all') // cannot be const, nerdamer object is updated below
 
 function interpretSpecialCommands(str) {
   // remove \operatorname{sum}(2,4) and return \sum(2,4)
@@ -8,7 +8,6 @@ function interpretSpecialCommands(str) {
   var operatorsRegex = /\\operatorname\{*([^}]+?)\}/gi
   var strippedvalue = str.replace(operatorsRegex, '\\$1')
   console.log('stripped', strippedvalue)
-
 
   // \left|\right| to abs()
   var absRegex = /\\left\|/gi
@@ -20,24 +19,22 @@ function interpretSpecialCommands(str) {
   console.log('stripped', strippedvalue)
 
   return strippedvalue
-
 }
 
 //perform preparations before parsing. Extract variables and declarations
 function prepareExpression(str) {
   str = interpretSpecialCommands(str)
   var expression = str
-  var scope = {};
-  return [expression, scope];
+  var scope = {}
+  return [expression, scope]
 }
-
-
 
 module.exports = {
   flush() {
     nerdamer.flush()
   },
-  calculate(inLaTeX, options) { // modified for LaTeX input
+  calculate(inLaTeX, options) {
+    // modified for LaTeX input
     // var txt = getText()
     var expressionAndScope = prepareExpression(inLaTeX)
     var expression = expressionAndScope[0]
@@ -49,65 +46,65 @@ module.exports = {
     var evaluated
     var text
     var LaTeX
-    
+
     //it might be a function declaration. If it is the scope object gets ignored
     if (functionDeclaration) {
       console.log('Got a function!')
       //Remember: The match comes back as [str, fnName, params, fnBody]
       //the function name should be the first group of the match
       var fnName = functionDeclaration[1]
-      //the parameters are the second group according to this regex but comes with commas 
+      //the parameters are the second group according to this regex but comes with commas
       //hence the splitting by ,
       var params = functionDeclaration[2].split(',')
       //the third group is just the body and now we have all three parts nerdamer needs to create the function
       var fnBody = nerdamer.convertFromLaTeX(functionDeclaration[3]).toString()
-      
+
       //we never checked if this is in proper format for nerdamer so we'll just try and if nerdamer complains we'll let the person know
       try {
-        console.log("Name,Params,Body(convertFromLaTeX)", fnName, params, fnBody)
-        evaluated = nerdamer.setFunction(fnName, params, fnBody);
+        console.log('Name,Params,Body(convertFromLaTeX)', fnName, params, fnBody)
+        evaluated = nerdamer.setFunction(fnName, params, fnBody)
 
         //generate the latex
-        LaTeX = fnName+ //parse the function name with nerdamer so we can get back some nice LaTeX
-                '('+ //do the same for the parameters
-                    params.map(function(x) {
-                        return nerdamer(x).toTeX();
-                    }).join(',')+
-                '):='+
-                nerdamer(fnBody).toTeX();
+        LaTeX =
+          fnName + //parse the function name with nerdamer so we can get back some nice LaTeX
+          '(' + //do the same for the parameters
+          params
+            .map(function(x) {
+              return nerdamer(x).toTeX()
+            })
+            .join(',') +
+          '):=' +
+          nerdamer(fnBody).toTeX()
 
         // return evaluated
         // return undefined
         // console.log()
         return { text: undefined, LaTeX: undefined }
-      }
-      catch(e) { 
+      } catch (e) {
         console.log('Error: Could not set function.</br>' + e.toString())
-        return { text: 'err', LaTeX: 'err'}
+        return { text: 'err', LaTeX: 'err' }
       }
     } else {
-      var variableDeclaration = /^([a-z_][a-z\d_]*):(.+)$/gi.exec(expression);
+      var variableDeclaration = /^([a-z_][a-z\d_]*):(.+)$/gi.exec(expression)
       if (variableDeclaration) {
         console.log('Got a variable declaration!')
         try {
           var varName = variableDeclaration[1]
           var varValue = nerdamer.convertFromLaTeX(variableDeclaration[2]).toString()
           //set the value
-          evaluated = nerdamer.setVar(varName, varValue);
-          
+          evaluated = nerdamer.setVar(varName, varValue)
+
           console.log('setting', varName, 'to(convertFromLaTeX)', varValue)
-          LaTeX = varName + ':' + nerdamer(varValue).toTeX();
+          LaTeX = varName + ':' + nerdamer(varValue).toTeX()
           text = nerdamer(varValue, scope).toString()
           // return [text, LaTeX]
           // return undefined
           return { text, LaTeX }
-        }
-        catch(e){
+        } catch (e) {
           console.log('Something went wrong. Nerdamer could not parse expression!</br>' + e.toString())
-          return { text: 'err', LaTeX: 'err'}
-        } 
-      }
-      else {
+          return { text: 'err', LaTeX: 'err' }
+        }
+      } else {
         try {
           //store the user expression so modifications don't get added
           // var user_expression = expression;
@@ -118,7 +115,7 @@ module.exports = {
           // } else {
           //   user_expression = nerdamer.convertFromLaTeX(user_expression).toString()
           // }
-          console.log("looking at", expression)
+          console.log('looking at', expression)
           expression = nerdamer.convertFromLaTeX(expression).toString()
           console.log('expression(convertFromLaTeX)', expression, scope)
           evaluated = nerdamer(expression, scope)
@@ -128,15 +125,14 @@ module.exports = {
           LaTeX = nerdamer(text).toTeX(options.numberformat == 'decimals' ? 'decimals' : undefined)
           return { text, LaTeX }
           // return undefined
-        }
-        catch(e){
-          console.log(e.stack);
+        } catch (e) {
+          console.log(e.stack)
           console.log('Something went wrong. Nerdamer could not parse expression!</br>' + e.toString())
-          return { text: 'err', LaTeX: 'err'}
+          return { text: 'err', LaTeX: 'err' }
         }
       }
     }
-    
+
     // return undefined
   }
 }

@@ -1,31 +1,21 @@
 <template>
-  <div class="header" >
+  <div class="header">
     <!-- <a-layout-header :style="{ position: 'fixed', zIndex: 1, width: '100%' }"> -->
-      <a-menu
-        theme="light"
-        mode="horizontal"
-        :default-selected-keys="['2']"
-        :style="{ lineHeight: '36px', paddingLeft: '20px' }"
-      >
+    <a-menu theme="light" mode="horizontal" :default-selected-keys="['2']" :style="{ lineHeight: '36px', paddingLeft: '20px' }">
+      <a-sub-menu>
+        <span slot="title" class="submenu-title-wrapper">File</span>
+        <a-menu-item key="setting:1">
+          New
+        </a-menu-item>
+        <a-menu-item key="setting:2">
+          Open
+        </a-menu-item>
+        <a-menu-item key="setting:3">
+          Save as...
+        </a-menu-item>
+      </a-sub-menu>
+    </a-menu>
 
-        <a-sub-menu>
-          <span slot="title" class="submenu-title-wrapper"
-            >File</span
-          >
-            <a-menu-item key="setting:1">
-              New
-            </a-menu-item>
-            <a-menu-item key="setting:2">
-              Open
-            </a-menu-item>
-            <a-menu-item key="setting:3">
-              Save as...
-            </a-menu-item>
-        </a-sub-menu>
-
-      </a-menu>
-
-      
     <!-- </a-layout-header> -->
   </div>
 </template>
@@ -35,32 +25,22 @@
 
 export default {
   name: 'Page',
-  components: {
-  },
-  props: {
-  },
-  data () {
+  components: {},
+  props: {},
+  data() {
     return {
       scrollPosition: null,
       outputFormat: 'LaTeX',
       mathOptions: {
         numberformat: 'decimals',
-        decimals: 5,
-      },
+        decimals: 5
+      }
     }
   },
-  mounted: function () {
-    
-  },
-  beforeDestroy () {
-
-  },
-  methods: {
-    
-  },
-  computed: {
-
-  }
+  mounted: function() {},
+  beforeDestroy() {},
+  methods: {},
+  computed: {}
 }
 </script>
 
