@@ -1,6 +1,6 @@
 <template>
-<div>
-  <!-- <a-layout-sider > -->
+  <div>
+    <!-- <a-layout-sider > -->
     <!-- <div class="logo" /> -->
     <a-menu theme="dark" mode="inline" :default-selected-keys="['4']">
       <a-menu-item key="1">
@@ -36,7 +36,7 @@
         <span class="nav-text">nav 8</span>
       </a-menu-item>
     </a-menu>
-  <!-- </a-layout-sider> -->
+    <!-- </a-layout-sider> -->
   </div>
 </template>
 
@@ -45,36 +45,24 @@
 
 export default {
   name: 'Page',
-  components: {
-  },
-  props: {
-  },
-  data () {
+  components: {},
+  props: {},
+  data() {
     return {
       scrollPosition: null,
       outputFormat: 'LaTeX',
       mathOptions: {
         numberformat: 'decimals',
-        decimals: 5,
-      },
+        decimals: 5
+      }
     }
   },
-  mounted: function () {
-    
-  },
-  beforeDestroy () {
-
-  },
-  methods: {
-    
-  },
-  computed: {
-
-  }
+  mounted: function() {},
+  beforeDestroy() {},
+  methods: {},
+  computed: {}
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
-</style>
+<style scoped></style>
