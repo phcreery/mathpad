@@ -7,16 +7,16 @@
           <a-icon type="setting" @click="()=>{}"/>
         </template> -->
 
-      <div no-pointer-event class="node" :class="[isselected ? 'selected' : 'notselected']">
+      <div class="node" :class="[isselected ? 'selected' : 'notselected']">
         <!-- put a 4px space between node, =, result -->
         <a-space :size="4">
           <mathlive-mathfield
-            id="mf"
+            :id="'mf_' + id"
             ref="mathfield"
             class="mathfield"
             :options="{
               smartFence: false,
-              virtualKeyboardMode: 'onfocus',
+              virtualKeyboardMode: 'off',
               virtualKeyboards: 'all',
               virtualKeyboardTheme: 'apple',
               fontsDirectory: './fonts'
@@ -112,25 +112,40 @@ export default {
   },
   mounted: function() {
     this.initformula = this.formula
-    // EventBus.$on('focus', (id) => { if (id == this.id) this.makeFocus() })
     this.$on('focus', id => {
       if (id == this.id) this.makeFocus()
     })
     this.makeInteractable(this.$refs.myid)
-    // document
-    //   .querySelector('#shadow-root')
-    //   .shadowRoot.querySelector('.ML__fieldcontainer')
-    //   .setAttribute('style', 'min-height: 1px;')
-    // document
-    //   .querySelector('#mf')
-    //   .shadowRoot.querySelector('div > span.ML__fieldcontainer')
-    //   .setAttribute('style', 'min-height: 1px;')
-    console.log('doing', this.$refs.mathfield, this.$refs.mathfield.$el.shadowRoot.children[1]) //document.querySelectorAll('.mathfield')
-    // this.$refs.mathfield.$el.style['minHeight'] = '1px'
-    this.$refs.mathfield.$el.shadowRoot.children[1].querySelector('.ML__fieldcontainer').style['minHeight'] = '1px'
-    // document.querySelector('#mf').shadowRoot.querySelector('span.ML__fieldcontainer').style['min-height'] = '1px'
+    this.$nextTick(() => {
+      this.mathfieldStyleing()
+    })
+  },
+  updated() {
+    this.$nextTick(function() {
+      // Code that will run only after the
+      // entire view has been re-rendered
+      this.mathfieldStyleing()
+    })
   },
   methods: {
+    mathfieldStyleing() {
+      // console.log('doing', this.$refs.mathfield, this.$el, this.$el.querySelector('#mf' + this.id)) //document.querySelectorAll('.mathfield')
+      // document
+      //   .querySelector('.mathfield')
+      //   .shadowRoot.querySelector('.ML__fieldcontainer')
+      //   .setAttribute('style', 'min-height: 1px;')
+      // document
+      //   .querySelector('#mf')
+      //   .shadowRoot.querySelector('div > span.ML__fieldcontainer')
+      //   .setAttribute('style', 'min-height: 1px;')
+      // this.$refs.mathfield.$el.shadowRoot.querySelector('div > .ML__fieldcontainer').style['minHeight'] = '1px'
+      // this.$refs.mathfield.$el.shadowRoot.querySelector('div > span.ML__fieldcontainer > span').style['padding'] = '0px'
+      // this.$el.querySelector('#mf').shadowRoot.querySelector('div > .ML__fieldcontainer').style['minHeight'] = '1px'
+      // this.$el.querySelector('#mf').shadowRoot.querySelector('div > span.ML__fieldcontainer > span').style['padding'] = '0px'
+      document.querySelector('#mf_' + this.id).shadowRoot.querySelector('div > .ML__fieldcontainer').style['minHeight'] = '1px'
+      document.querySelector('#mf_' + this.id).shadowRoot.querySelector('div > .ML__fieldcontainer').style['minWidth'] = '10px'
+      document.querySelector('#mf_' + this.id).shadowRoot.querySelector('div > .ML__fieldcontainer > span').style['padding'] = '0px'
+    },
     makeInteractable(element) {
       // https://interactjs.io/
       var x = this.x
@@ -190,12 +205,13 @@ export default {
     },
     makeFocus() {
       console.log('Focusing on', this.$refs.mathfield)
-      this.$refs.mathfield.focus()
+      // this.$refs.mathfield.focus()
+      this.$emit('selected', this.id)
     },
     ping: function() {
-      console.log('ping', this.$refs.mathfield.getValue('ascii-math'))
+      console.log('ping', this.id, this.$refs.mathfield.getValue('ascii-math'))
       // EventBus.$emit('selected', this.id)
-      this.$emit('selected', this.id)
+      this.makeFocus()
     },
     change: function(event) {
       console.log('changed to', event, typeof event)
@@ -260,6 +276,9 @@ export default {
   position: absolute;
   /* put equal sign to the right of the node */
   white-space: nowrap;
+  /* border: 1px solid #ddd; */
+  /* border-radius: 5px; */
+  /* background-color: #fff; */
 }
 .selected {
   border: 1px;
@@ -275,11 +294,13 @@ export default {
 }
 .mathfield {
   border: 1px solid #ddd;
-  padding: 5px;
   /* margin: 10px 0 10px 0; */
   border-radius: 5px;
   background-color: #fff;
-  display: inline-block;
+  /* display: inline-block; */
+  font-size: 16px;
+  padding: 5px;
+  /* margin: 5px; */
 }
 .output {
   padding: 5px;
@@ -295,6 +316,7 @@ export default {
 
 <style>
 /* @import "../node_modules/katex/dist/katex.min.css"; */
+/* These used to work at mathlive 0.68.1 */
 /* .ML__fieldcontainer {
   height: 19px !important;
   min-width: 20px;
