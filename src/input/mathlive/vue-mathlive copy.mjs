@@ -1,7 +1,7 @@
-/* MathLive 0.69.2  */
+/* MathLive 0.68.1  */
 var t = {
   name: 'mathlive-mathfield',
-  template: '<math-field :id="id"><slot></slot></math-field>',
+  template: '<div class="mathfield" :id="id"><slot></slot></div>',
   props: {
     id: { type: String, default: '' },
     value: { type: String, default: '' },
@@ -15,21 +15,21 @@ var t = {
   },
   watch: {
     value(t, e) {
-      t !== this.$el.getValue() && this.$el.setValue(t, { suppressChangeNotifications: !0 })
+      t !== this.$el.mathfield.getValue() && this.$el.mathfield.setValue(t, { suppressChangeNotifications: !0 })
     },
     options: {
       deep: !0,
       handler(t, e) {
-        JSON.stringify(t) !== JSON.stringify(e) && this.$el.setOptions(t)
+        JSON.stringify(t) !== JSON.stringify(e) && this.$el.mathfield.setOptions(t)
       }
     }
   },
   mounted() {
     this.$nextTick(() => {
-      this.$el.setOptions({
+      this.$mathlive.makeMathField(this.$el, {
         ...this.options,
         onContentDidChange: t => {
-          this.$emit('input', this.$el.getValue())
+          this.$emit('input', this.$el.mathfield.getValue())
         },
         onFocus: t => {
           this.$emit('focus')
@@ -51,25 +51,28 @@ var t = {
   },
   methods: {
     executeCommand(t) {
-      this.$el.executeCommand(t)
+      this.$el.mathfield.executeCommand(t)
     },
     hasFocus() {
-      return this.$el.hasFocus()
+      return this.$el.mathfield.hasFocus()
     },
     focus() {
-      this.$el.focus()
+      this.$el.mathfield.focus()
     },
     blur() {
-      this.$el.blur()
+      this.$el.mathfield.blur()
     },
     getValue(t) {
-      return this.$el.getValue(t)
+      return this.$el.mathfield.getValue(t)
+    },
+    selectedText(t) {
+      return this.$el.mathfield.$selectedText(t)
     },
     insert(t, e) {
-      this.$el.insert(t, e)
+      this.$el.mathfield.insert(t, e)
     },
     select() {
-      this.$el.select()
+      this.$el.mathfield.select()
     }
   }
 }

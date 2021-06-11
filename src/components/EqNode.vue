@@ -13,6 +13,7 @@
           <mathlive-mathfield
             id="mf"
             ref="mathfield"
+            class="mathfield"
             :options="{
               smartFence: false,
               virtualKeyboardMode: 'onfocus',
@@ -116,6 +117,18 @@ export default {
       if (id == this.id) this.makeFocus()
     })
     this.makeInteractable(this.$refs.myid)
+    // document
+    //   .querySelector('#shadow-root')
+    //   .shadowRoot.querySelector('.ML__fieldcontainer')
+    //   .setAttribute('style', 'min-height: 1px;')
+    // document
+    //   .querySelector('#mf')
+    //   .shadowRoot.querySelector('div > span.ML__fieldcontainer')
+    //   .setAttribute('style', 'min-height: 1px;')
+    console.log('doing', this.$refs.mathfield, this.$refs.mathfield.$el.shadowRoot.children[1]) //document.querySelectorAll('.mathfield')
+    // this.$refs.mathfield.$el.style['minHeight'] = '1px'
+    this.$refs.mathfield.$el.shadowRoot.children[1].querySelector('.ML__fieldcontainer').style['minHeight'] = '1px'
+    // document.querySelector('#mf').shadowRoot.querySelector('span.ML__fieldcontainer').style['min-height'] = '1px'
   },
   methods: {
     makeInteractable(element) {
@@ -282,10 +295,10 @@ export default {
 
 <style>
 /* @import "../node_modules/katex/dist/katex.min.css"; */
-.ML__fieldcontainer {
-  min-height: 19px !important;
+/* .ML__fieldcontainer {
+  height: 19px !important;
   min-width: 20px;
-}
+} */
 /* .ML__fieldcontainer_field {
   min-width: 40px;
 } */

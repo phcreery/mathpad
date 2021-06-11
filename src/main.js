@@ -15,7 +15,8 @@ import 'katex/dist/katex.min.css'
 // import MathfieldComponent from '../../dist/vue-mathlive.mjs';
 // import MathLive from "mathlive.js";
 // import Mathfield from "mathlive/vue-mathlive.mjs";
-import MathLive from './input/mathlive/mathlive.min.mjs'
+// import MathLive from './input/mathlive/mathlive.min.mjs'
+import * as MathLive from 'mathlive'
 // import MathLive from "mathlive";
 // import MathfieldComponent from "./mathlive/vue-mathlive.mjs";
 var MathfieldComponent = require('./input/mathlive/vue-mathlive.mjs').default
@@ -27,8 +28,9 @@ Vue.config.productionTip = false
 Vue.config.devtools = true
 
 Vue.use(Antd)
-Vue.use(MathfieldComponent, MathLive)
-// Vue.use(MathLive);
+Vue.use(MathfieldComponent) //, MathLive)
+Vue.use(MathLive)
+// Vue.component('custom-tag', Mathfield)
 
 Vue.use(VueKatex, {
   globalOptions: {

@@ -81,6 +81,7 @@ export default {
   height: 100%;
 } */
 .page {
+  /* A4 Letter */
   width: 21cm;
   /* width: 90vw; */
   min-height: 29.7cm;

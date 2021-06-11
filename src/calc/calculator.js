@@ -3,7 +3,7 @@
 const nerdamer = require('nerdamer/all') // cannot be const, nerdamer object is updated below
 
 function interpretSpecialCommands(str) {
-  // remove \operatorname{sum}(2,4) and return \sum(2,4)
+  // remove \operatorname{sum}(2,4) and return sum(2,4)
   // is \ needed before sum?
   var operatorsRegex = /\\operatorname\{*([^}]+?)\}/gi
   var strippedvalue = str.replace(operatorsRegex, '\\$1')
