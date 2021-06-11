@@ -16,7 +16,7 @@
             class="mathfield"
             :options="{
               smartFence: false,
-              virtualKeyboardMode: 'off',
+              virtualKeyboardMode: 'auto',
               virtualKeyboards: 'all',
               virtualKeyboardTheme: 'apple',
               fontsDirectory: './fonts'

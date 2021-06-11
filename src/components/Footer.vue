@@ -154,7 +154,7 @@ export default {
   background: white;
   position: fixed;
   bottom: 0;
-  z-index: 1;
+  /* z-index: 1; */
   width: 100%;
   height: 36px;
   box-shadow: 0px 0px 5px 0.1px #ccc;

@@ -180,7 +180,7 @@ export default {
             this.mouseY = event.y - this.$refs['contextarea'].offsetTop + this.scrollPosition
             // parent. note : Since the refs is updated on hot-reload but this component is not re-mounted, the refs is lost
             // console.log("Mouse button:", event.pointerId, event.button, event.x) // clientX
-            console.log('scroll:', this.scrollPosition) // this.$refs['contextarea'].scrollTop
+            console.log('deselect, scroll:', this.scrollPosition) // this.$refs['contextarea'].scrollTop
             // event.preventDefault()
           }.bind(this)
         )
