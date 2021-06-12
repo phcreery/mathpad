@@ -291,6 +291,12 @@ export default {
         // var val = calc.calculate(ascii) // equation.function
         var val = calc.calculate(equation.function, this.mathOptions)
         console.log('Result:', val)
+        if (val.text == 'error' || val.error) {
+          this.$notification['error']({
+            message: val.error,
+            description: val.body
+          })
+        }
         if (this.mathOptions.outputFormat == 'string') {
           equations[index].result = val.text
         } else {
