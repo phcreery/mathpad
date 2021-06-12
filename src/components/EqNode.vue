@@ -1,12 +1,6 @@
 <template>
   <div id="grid-snap" ref="myid">
     <a-dropdown v-model="contextmenu" :trigger="['contextmenu']">
-      <!-- <a-tooltip placement="right">
-        <template slot="title">
-          [{{id}}]  {{formula}} = {{result}}
-          <a-icon type="setting" @click="()=>{}"/>
-        </template> -->
-
       <div class="node" :class="[isselected ? 'selected' : 'notselected']">
         <!-- put a 4px space between node, =, result -->
         <a-space :size="4">
@@ -16,7 +10,7 @@
             class="mathfield"
             :options="{
               smartFence: false,
-              virtualKeyboardMode: 'auto',
+              virtualKeyboardMode: 'none',
               virtualKeyboards: 'all',
               virtualKeyboardTheme: 'apple',
               fontsDirectory: './fonts'
@@ -32,10 +26,7 @@
           </div>
           <div v-else-if="format == 'LaTeX' && result">
             <katex-element expression="=" style="display: inline-block" />
-            <div v-katex="result" style="display: inline-block">
-              <!-- {{ result | ifdisplayableresult }} -->
-              <!-- {{result}} -->
-            </div>
+            <div v-katex="result" style="display: inline-block" />
           </div>
 
           <p v-if="result">
@@ -43,8 +34,6 @@
           </p>
         </a-space>
       </div>
-
-      <!-- </a-tooltip> -->
 
       <a-menu slot="overlay">
         <a-menu-item
@@ -107,7 +96,8 @@ export default {
     return {
       gridSize: 20, // px
       localformula: '',
-      contextmenu: false
+      contextmenu: false,
+      shadowRootEl: null
     }
   },
   mounted: function() {
@@ -142,9 +132,11 @@ export default {
       // this.$refs.mathfield.$el.shadowRoot.querySelector('div > span.ML__fieldcontainer > span').style['padding'] = '0px'
       // this.$el.querySelector('#mf').shadowRoot.querySelector('div > .ML__fieldcontainer').style['minHeight'] = '1px'
       // this.$el.querySelector('#mf').shadowRoot.querySelector('div > span.ML__fieldcontainer > span').style['padding'] = '0px'
-      document.querySelector('#mf_' + this.id).shadowRoot.querySelector('div > .ML__fieldcontainer').style['minHeight'] = '1px'
-      document.querySelector('#mf_' + this.id).shadowRoot.querySelector('div > .ML__fieldcontainer').style['minWidth'] = '10px'
-      document.querySelector('#mf_' + this.id).shadowRoot.querySelector('div > .ML__fieldcontainer > span').style['padding'] = '0px'
+      this.shadowRootEl = document.querySelector('#mf_' + this.id).shadowRoot
+      // var shadowRootElstyle = this.shadowRootEl.querySelector('style') // where the black border is at...
+      this.shadowRootEl.querySelector('div > .ML__fieldcontainer').style['minHeight'] = '1px'
+      // document.querySelector('#mf_' + this.id).shadowRoot.querySelector('div > .ML__fieldcontainer').style['minWidth'] = '10px'
+      this.shadowRootEl.querySelector('div > .ML__fieldcontainer > span').style['padding'] = '0px'
     },
     makeInteractable(element) {
       // https://interactjs.io/
@@ -205,23 +197,23 @@ export default {
     },
     makeFocus() {
       console.log('Focusing on', this.$refs.mathfield)
-      // this.$refs.mathfield.focus()
       this.$emit('selected', this.id)
     },
     ping: function() {
-      console.log('ping', this.id, this.$refs.mathfield.getValue('ascii-math'))
-      // EventBus.$emit('selected', this.id)
+      console.log('ping', this.id, 'ascii:', this.$refs.mathfield.getValue('ascii-math'))
       this.makeFocus()
+      // used settimeout bc keyboard overlay transition would intercept context menu
+      // setTimeout(() => {
+      //   this.$refs.mathfield.executeCommand(['showVirtualKeyboard'])
+      // }, 200)
     },
     change: function(event) {
       console.log('changed to', event, typeof event)
-      // EventBus.$emit('changed', { id: this.id, to: event })
       this.$emit('changed', { id: this.id, to: event })
       // this.$emit('init') // refresh
       this.localformula = event
     },
     deletenode: function() {
-      // EventBus.$emit('delete', this.id)
       this.$emit('delete', this.id)
     },
     getValue(type) {
@@ -241,11 +233,7 @@ export default {
       document.body.removeChild(dummy)
     },
     getClipboard(cb) {
-      var text
       navigator.clipboard.readText().then(text => cb(text))
-      // const clipboardItems = await navigator.clipboard.read();
-      console.log(text)
-      // return text
     }
   },
   filters: {
@@ -273,7 +261,7 @@ export default {
 }
 .node {
   /* relative to top-left of page sor that grid is not affected by surrounding nodes */
-  position: absolute;
+  /* position: absolute; */
   /* put equal sign to the right of the node */
   white-space: nowrap;
   /* border: 1px solid #ddd; */
@@ -316,7 +304,7 @@ export default {
 
 <style>
 /* @import "../node_modules/katex/dist/katex.min.css"; */
-/* These used to work at mathlive 0.68.1 */
+/* These used to work at mathlive 0.68.1 ? */
 /* .ML__fieldcontainer {
   height: 19px !important;
   min-width: 20px;
@@ -327,7 +315,16 @@ export default {
 .ML__keyboard {
   transition: none !important;
 }
+.ML__keyboard--plate {
+  transition: none !important;
+}
 body.ML__fonts-loading .ML__base {
   visibility: visible !important;
 }
+/* math-field::part(virtual-keyboard-toggle) {
+  color: red;
+} */
+/* ::math-field(div > .ML__fieldcontainer) {
+  min-width: 200px;
+} */
 </style>

@@ -20,7 +20,7 @@
         <Equation
           v-for="node in storage.equations"
           ref="node"
-          class="node"
+          class="node_parent"
           :key="node.id"
           :formula="node.function"
           :isselected="storage.activeEquations.includes(node.id) ? true : false"
@@ -33,6 +33,8 @@
           v-on:changed="changeinfo => changeNodeValue(changeinfo)"
           v-on:moved="changeinfo => changeNodePosition(changeinfo)"
           v-on:delete="id => deleteNode(id)"
+          @mouseover="mouseovernode()"
+          @mouseleave="mouseleavenode()"
         />
       </div>
 
@@ -75,7 +77,7 @@ export default {
       mounted: false,
       scrollPosition: null,
       contextmenu: false,
-      contextmenutrigger: ['contextmenu'],
+      contextmenutrigger: [''],
       defaultEquation: { id: 0, x: 0, y: 0, function: '', result: '' },
       mouseX: 0,
       mouseY: 0,
@@ -129,13 +131,6 @@ export default {
     }
   },
   mounted: function() {
-    this.addInteraction()
-
-    // EventBus.$on('selected', (id) => { this.selectNode(id) })
-    // EventBus.$on('changed', (changeinfo) => { this.changeNodeValue(changeinfo) })
-    // EventBus.$on('moved', (changeinfo) => { this.changeNodePosition(changeinfo) })
-    // EventBus.$on('delete', (id) => { this.deleteNode(id) })
-
     EventBus.$on('doc-math-options', mathOptions => {
       this.mathOptions = mathOptions
     })
@@ -152,42 +147,66 @@ export default {
       this.storage.pages += 1
     })
 
-    // this.readEquationAreaSize()
     this.mounted = true
+
+    this.$nextTick(function() {
+      this.addInteraction()
+    })
   },
   beforeDestroy() {
     // fix to $refs break on hot reload
     interact('.equationarea').unset()
-    interact('.node').unset()
+    interact('.node_parent').unset()
   },
   methods: {
+    // here's an explanation of how I got the context menu to work
+    // this interact class is listening for clicks on the equation area (not child elements)
+    // when it detects a 'tap', right click, and diectly on 'equationarea', it quickly enables
+    // the context menu trigger (contextmenutrigger) and thus lets antd open the context menu
+    // else, it handles other conditions
     addInteraction() {
       // var parent = this
       window.addEventListener('scroll', this.updateScroll)
-
+      var movable = document.querySelectorAll('.node_parent') //.node_parent  #grid-snap
       interact('.equationarea')
         .pointerEvents({
           // ignoreFrom: '.mathfield',
-          ignoreFrom: '.node'
+          ignoreFrom: '.node_parent'
         })
         .on(
           'tap',
           function(event) {
-            this.storage.activeEquations = []
-            this.contextmenu = false
-            this.contextmenutrigger = ['contextmenu']
-            this.mouseX = event.x - this.$refs['contextarea'].offsetLeft
-            this.mouseY = event.y - this.$refs['contextarea'].offsetTop + this.scrollPosition
+            console.log('tapped', event)
+            if (event.button == 0) {
+              // left click
+              this.storage.activeEquations = []
+              this.contextmenu = false
+              this.contextmenutrigger = ['']
+            } else if (event.button == 2) {
+              // right click
+              if (event.target.className.includes('equationarea')) {
+                this.contextmenutrigger = ['contextmenu']
+                this.mouseX = event.x - this.$refs['contextarea'].offsetLeft
+                this.mouseY = event.y - this.$refs['contextarea'].offsetTop + this.scrollPosition
+              } else {
+                this.contextmenutrigger = ['']
+                console.log('gotta ignore')
+              }
+            }
+
             // parent. note : Since the refs is updated on hot-reload but this component is not re-mounted, the refs is lost
             // console.log("Mouse button:", event.pointerId, event.button, event.x) // clientX
-            console.log('deselect, scroll:', this.scrollPosition) // this.$refs['contextarea'].scrollTop
+            console.log(event.button, 'deselect, scroll:', this.scrollPosition, event.target) // this.$refs['contextarea'].scrollTop
             // event.preventDefault()
           }.bind(this)
         )
 
-      interact('.node').on(
+      console.log('moveable', movable)
+      // doesnt work currently: to test, refresh, right click middle of eq (first action & first eq only)
+      interact('.node_parent').on(
         'tap',
-        function() {
+        function(event) {
+          console.log('tapped moveable', event)
           console.log('shouldnt open')
           this.contextmenu = false
           this.contextmenutrigger = []
@@ -195,37 +214,34 @@ export default {
           // event.stopPropagation()
         }.bind(this)
       )
-      this.readEquationAreaSize()
+      // this.readEquationAreaSize()
     },
     removeInteraction() {
       interact('.equationarea').unset()
-      interact('.node').unset()
-      this.readEquationAreaSize()
+      interact('.node_parent').unset()
+      // this.readEquationAreaSize()
     },
     updateScroll() {
       this.scrollPosition = window.scrollY
     },
-    readEquationAreaSize() {
-      console.log('table size:')
-      console.log(this.$parent.$el.offsetWidth)
-      console.log(this.$parent.$el.offsetHeight)
-    },
+    // readEquationAreaSize() {
+    //   console.log(this.$parent.$el.offsetWidth)
+    //   console.log(this.$parent.$el.offsetHeight)
+    // },
     selectNode(id) {
       console.log('Selecting', id)
       this.storage.activeEquations = [id]
     },
     changeNodeValue(changeInfo) {
-      console.log('Changing', changeInfo)
+      // Finds index of element with that id
       var index = this.storage.equations.findIndex(element => element.id == changeInfo.id)
-      console.log('Changing index', index)
       if (index >= 0) {
         this.storage.equations[index].function = changeInfo.to
       }
     },
     changeNodePosition(changeInfo) {
-      console.log('Moving', changeInfo)
+      // Finds index of element with that id
       var index = this.storage.equations.findIndex(element => element.id == changeInfo.id)
-      console.log('Moving index', index)
       if (index >= 0) {
         this.storage.equations[index].x = changeInfo.x
         this.storage.equations[index].y = changeInfo.y
@@ -245,7 +261,6 @@ export default {
       this.storage.equations.push(newEquation)
       this.contextmenu = false
       this.storage.activeEquations = [next]
-      // this.$emit('init') // optinal force update
       // some hackery to make sure the new component renderd before calling it
       setTimeout(() => {
         // setTimeout to put this into event queue
@@ -266,6 +281,14 @@ export default {
     handleChangeOUTformat(value) {
       this.mathOptions.outputFormat = value
       this.compute()
+    },
+    mouseovernode() {
+      console.log('mouseover')
+      this.contextmenutrigger = ['']
+    },
+    mouseleavenode() {
+      console.log('mouseleave')
+      this.contextmenutrigger = ['contextmenu']
     },
     compute() {
       calc.flush()
@@ -315,5 +338,11 @@ export default {
   position: absolute;
   padding: 24px;
   top: calc(24px + 36px);
+}
+.node_parent {
+  position: absolute;
+  width: auto;
+  height: auto;
+  padding: 2px;
 }
 </style>
