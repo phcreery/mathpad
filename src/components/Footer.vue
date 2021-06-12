@@ -23,6 +23,15 @@
 
       <a-col>
         <a-space :style="{ height: '36px' }">
+          <a-tooltip :mouseEnterDelay="1">
+            <template slot="title">
+              Calculate
+            </template>
+            <a-button size="small" @click="togglevirtualkb"><a-icon type="number"/></a-button>
+          </a-tooltip>
+
+          <div :style="{ width: '20px' }" />
+
           <!-- Number Format -->
           <a-select
             default-value="Decimal"
@@ -139,6 +148,9 @@ export default {
     },
     updateDocOptions() {
       EventBus.$emit('doc-math-options', this.mathOptions)
+    },
+    togglevirtualkb() {
+      EventBus.$emit('togglevirtualkb')
     },
     compute() {
       EventBus.$emit('compute')

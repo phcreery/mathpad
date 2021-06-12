@@ -131,12 +131,11 @@ export default {
     }
   },
   mounted: function() {
-    EventBus.$on('doc-math-options', mathOptions => {
-      this.mathOptions = mathOptions
-    })
-    EventBus.$on('compute', () => {
-      this.compute()
-    })
+    EventBus.$on('doc-math-options', mathOptions => (this.mathOptions = mathOptions))
+    EventBus.$on('compute', () => this.compute())
+    EventBus.$on('togglevirtualkb', () =>
+      this.$refs.node[this.storage.equations.findIndex(element => element.id == this.storage.activeEquations[0])].togglevirtualkb()
+    )
 
     EventBus.$on('togglescratch', () => {
       this.removeInteraction()

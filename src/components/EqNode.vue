@@ -135,7 +135,7 @@ export default {
       this.shadowRootEl = document.querySelector('#mf_' + this.id).shadowRoot
       // var shadowRootElstyle = this.shadowRootEl.querySelector('style') // where the black border is at...
       this.shadowRootEl.querySelector('div > .ML__fieldcontainer').style['minHeight'] = '1px'
-      // document.querySelector('#mf_' + this.id).shadowRoot.querySelector('div > .ML__fieldcontainer').style['minWidth'] = '10px'
+      this.shadowRootEl.querySelector('div > .ML__fieldcontainer').style['minWidth'] = '10px'
       this.shadowRootEl.querySelector('div > .ML__fieldcontainer > span').style['padding'] = '0px'
     },
     makeInteractable(element) {
@@ -219,6 +219,9 @@ export default {
     getValue(type) {
       console.log('getting')
       return this.$refs.mathfield.getValue(type)
+    },
+    togglevirtualkb() {
+      this.$refs.mathfield.executeCommand(['showVirtualKeyboard'])
     },
     copyToClipboard(text) {
       var dummy = document.createElement('textarea')
