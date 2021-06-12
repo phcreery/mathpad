@@ -18,6 +18,10 @@ function interpretSpecialCommands(str) {
   strippedvalue = strippedvalue.replace(absRegex, ')')
   console.log('stripped', strippedvalue)
 
+  // add spaces to multiplication (monkeypatch)
+  strippedvalue = strippedvalue.replace('\\cdot', ' \\cdot ')
+  strippedvalue = strippedvalue.replace('\\times', ' \\times ')
+
   return strippedvalue
 }
 

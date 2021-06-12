@@ -124,8 +124,9 @@ export default {
           { id: 26, x: 20, y: 540, function: 'laplace(t^6, t, s)', result: '' },
 
           { id: 27, x: 20, y: 580, function: 'defint(sin(x), 0, \\pi)', result: '' },
-          { id: 28, x: 300, y: 580, function: '\\int^\\pi_0(\\sin(x)),dx', result: '' }, // error
-          { id: 29, x: 600, y: 580, function: '\\int_{0}^{\\pi}(\\sin(x)),dx', result: '' } // error
+          { id: 28, x: 300, y: 580, function: '\\int_0^\\pi(\\sin(x)),dx', result: '' }, // error
+          { id: 29, x: 600, y: 580, function: '\\int_{0}^{\\pi}(\\sin(x)),dx', result: '' }, // error
+          { id: 30, x: 20, y: 140, function: '3.7847\\cdot7.873222', result: '' } // error
         ]
       }
     }

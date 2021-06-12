@@ -14,7 +14,7 @@
     "interactjs": "^1.10.11",
     "katex": "^0.13.11",
     "mathlive": "github:arnog/mathlive#fd45843",
-    "nerdamer": "github:phcreery/nerdamer",
+    "nerdamer": "github:phcreery/nerdamer#dev",
     "vue": "^2.6.11",
     "vue-katex": "^0.5.0"
   },

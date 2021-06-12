@@ -13,7 +13,8 @@
               virtualKeyboardMode: 'none',
               virtualKeyboards: 'all',
               virtualKeyboardTheme: 'apple',
-              fontsDirectory: './fonts'
+              fontsDirectory: './fonts',
+              removeExtraneousParentheses: false
             }"
             @focus="ping"
             @input="change"
