@@ -88,9 +88,10 @@
             </a-space>
           </a-tooltip>
 
-          <div :style="{ width: '20px' }" />
+          <!-- <div :style="{ width: '20px' }" /> -->
 
-          <a-icon type="zoom-out" class="vert-icon" />
+          <!-- Zoom -->
+          <!-- <a-icon type="zoom-out" class="vert-icon" />
           <a-slider
             id="test"
             :min="50"
@@ -100,7 +101,8 @@
             :style="{ width: '100px', marginTop: '6px', marginBottom: '6px' }"
             disabled
           />
-          <a-icon type="zoom-in" class="vert-icon" />
+          <a-icon type="zoom-in" class="vert-icon" /> -->
+
           <div :style="{ width: '20px' }" />
         </a-space>
       </a-col>

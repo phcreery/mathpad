@@ -4,7 +4,7 @@
     <a-menu theme="light" mode="horizontal" :default-selected-keys="['2']" :style="{ lineHeight: '36px', paddingLeft: '20px' }">
       <a-sub-menu>
         <span slot="title" class="submenu-title-wrapper">File</span>
-        <a-menu-item key="setting:1">
+        <a-menu-item key="setting:1" @click="newfile()">
           New
         </a-menu-item>
         <a-menu-item key="setting:2">
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-// import { EventBus } from './eventbus.js'
+import { EventBus } from './eventbus.js'
 
 export default {
   name: 'Page',
@@ -39,7 +39,11 @@ export default {
   },
   mounted: function() {},
   beforeDestroy() {},
-  methods: {},
+  methods: {
+    newfile() {
+      EventBus.$emit('newfile')
+    }
+  },
   computed: {}
 }
 </script>

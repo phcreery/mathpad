@@ -4,12 +4,14 @@
       <Header />
       <!-- <Sider/> -->
       <!-- class="content dwgtable withscratchpad center"  -->
+      <!-- :style="{ marginTop: this.mounted ? '0' : '110vh' }" -->
       <a-layout-content class="content dwgtable center" :class="{ withscratchpad: scratchpad }">
         <div :style="{ height: '100%' }">
-          <File />
+          <File v-if="fileOpen" :file="file" />
+          <FrontPage v-else />
         </div>
 
-        <a-button type="dashed" block style="margin-top: 4px;" @click="addpage">
+        <a-button v-if="fileOpen" type="dashed" block style="margin-top: 4px;" @click="addpage">
           Add Page
         </a-button>
       </a-layout-content>
@@ -23,6 +25,7 @@ import File from './components/File.vue'
 // import Sider from './components/Sider.vue'
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
+import FrontPage from './components/FrontPage.vue'
 
 import { EventBus } from './components/eventbus.js'
 
@@ -32,16 +35,36 @@ export default {
     File,
     // Sider,
     Header,
-    Footer
+    Footer,
+    FrontPage
   },
   data() {
     return {
-      scratchpad: false
+      scratchpad: false,
+      fileOpen: false,
+      file: {},
+      blankfile: {
+        pages: 1,
+        activeEquations: [0], // by IDs
+        equations: [
+          // ID: { attributes }
+        ]
+      }
     }
   },
   mounted: function() {
     EventBus.$on('togglescratch', value => {
       this.scratchpad = value
+    })
+    EventBus.$on('openfile', file => {
+      this.fileOpen = false
+      this.file = file
+      this.fileOpen = true
+    })
+    EventBus.$on('newfile', () => {
+      this.fileOpen = false
+      this.file = this.blankfile
+      this.fileOpen = true
     })
   },
   methods: {
@@ -61,6 +84,7 @@ export default {
   margin-bottom: calc(24px + 36px);
 }
 .dwgtable {
+  /* transition: margin 700ms; */
   width: 21cm;
   min-height: 29.7cm;
   background: white;
