@@ -23,11 +23,11 @@
 
       <a-col>
         <a-space :style="{ height: '36px' }">
-          <a-tooltip :mouseEnterDelay="1">
+          <a-tooltip>
             <template slot="title">
-              Calculate
+              Popout Keyboard
             </template>
-            <a-button size="small" @click="togglevirtualkb"><a-icon type="number"/></a-button>
+            <a-button size="small" @click="togglevirtualkb"><a-icon type="appstore"/></a-button>
           </a-tooltip>
 
           <div :style="{ width: '20px' }" />
