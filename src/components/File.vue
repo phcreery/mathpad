@@ -160,14 +160,15 @@ export default {
   },
   methods: {
     // here's an explanation of how I got the context menu to work
-    // this interact class is listening for clicks on the equation area (not child elements)
-    // when it detects a 'tap', right click, and diectly on 'equationarea', it quickly enables
+    // this interact.js instance is listening for clicks on the equation area (not child elements)
+    // WHEN it detects a 'tap' & right click & and directly on 'equationarea': it quickly enables
     // the context menu trigger (contextmenutrigger) and thus lets antd open the context menu
-    // else, it handles other conditions
+    // ELSE: it handles other conditions
+    // NOTE: the node context menu is always listening to the .node class 'tap's (inside the *node.vue el)
     addInteraction() {
       // var parent = this
       window.addEventListener('scroll', this.updateScroll)
-      var movable = document.querySelectorAll('.node_parent') //.node_parent  #grid-snap
+      // var movable = document.querySelectorAll('.node_parent') //.node_parent  #grid-snap
       interact('.equationarea')
         .pointerEvents({
           // ignoreFrom: '.mathfield',
@@ -190,7 +191,6 @@ export default {
                 this.mouseY = event.y - this.$refs['contextarea'].offsetTop + this.scrollPosition
               } else {
                 this.contextmenutrigger = ['']
-                console.log('gotta ignore')
               }
             }
 
@@ -200,34 +200,14 @@ export default {
             // event.preventDefault()
           }.bind(this)
         )
-
-      console.log('moveable', movable)
-      // doesnt work currently: to test, refresh, right click middle of eq (first action & first eq only)
-      interact('.node_parent').on(
-        'tap',
-        function(event) {
-          console.log('tapped moveable', event)
-          console.log('shouldnt open')
-          this.contextmenu = false
-          this.contextmenutrigger = []
-          // event.preventDefault()
-          // event.stopPropagation()
-        }.bind(this)
-      )
-      // this.readEquationAreaSize()
     },
     removeInteraction() {
       interact('.equationarea').unset()
       interact('.node_parent').unset()
-      // this.readEquationAreaSize()
     },
     updateScroll() {
       this.scrollPosition = window.scrollY
     },
-    // readEquationAreaSize() {
-    //   console.log(this.$parent.$el.offsetWidth)
-    //   console.log(this.$parent.$el.offsetHeight)
-    // },
     selectNode(id) {
       console.log('Selecting', id)
       this.storage.activeEquations = [id]

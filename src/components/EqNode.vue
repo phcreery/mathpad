@@ -2,7 +2,7 @@
   <div id="grid-snap" ref="myid">
     <a-dropdown v-model="contextmenu" :trigger="['contextmenu']">
       <div class="node" :class="[isselected ? 'selected' : 'notselected']">
-        <!-- put a 4px space between node, =, result -->
+        <!-- put a 4px space between node, =, and result -->
         <a-space :size="4">
           <mathlive-mathfield
             :id="'mf_' + id"
@@ -321,10 +321,4 @@ export default {
 body.ML__fonts-loading .ML__base {
   visibility: visible !important;
 }
-/* math-field::part(virtual-keyboard-toggle) {
-  color: red;
-} */
-/* ::math-field(div > .ML__fieldcontainer) {
-  min-width: 200px;
-} */
 </style>
