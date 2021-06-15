@@ -1,7 +1,7 @@
 <template>
   <div id="grid-snap" ref="myid">
     <a-dropdown v-model="contextmenu" :trigger="['contextmenu']">
-      <div class="node" :class="[isselected ? 'selected' : 'notselected', result == 'error' ? 'error' : undefined]">
+      <div class="node" :class="[result == 'error' ? 'error' : undefined, isselected ? 'selected' : 'notselected']">
         <!-- put a 4px space between node, =, and result -->
         <a-space :size="4">
           <mathlive-mathfield

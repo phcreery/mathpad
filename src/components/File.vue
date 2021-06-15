@@ -138,6 +138,7 @@ export default {
     this.storage = this.file
   },
   mounted: function() {
+    // this.storage = this.file
     EventBus.$on('doc-math-options', mathOptions => (this.mathOptions = mathOptions))
     EventBus.$on('compute', () => this.compute())
     EventBus.$on('togglevirtualkb', () =>

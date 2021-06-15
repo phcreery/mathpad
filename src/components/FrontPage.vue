@@ -1,5 +1,6 @@
 <template>
   <div class="landing page">
+    <div style="width: 100%; display: block; height: 50px;"></div>
     <a-row style="padding: 64px;" type="flex" justify="space-around">
       <a-col>
         <!-- <a-card hoverable style="width: 200px; margin-bottom: 20px;">
@@ -8,17 +9,20 @@
         <a-card hoverable style="width: 200px">
           <h1 style="text-align: center; ">Open</h1>
         </a-card> -->
-        <a-button type="primary" size="large" @click="newfile()" style="width: 200px; height: 100px;  margin-bottom: 20px;">
+        <a-button type="primary" size="large" @click="promptnewfile()" style="width: 200px; height: 100px;  margin-bottom: 20px;">
+          <a-icon type="file-add" />
           New
         </a-button>
         <br />
-        <a-button type="primary" size="large" style="width: 200px; height: 100px;">
+        <a-button type="primary" size="large" @click="promptopenfile()" style="width: 200px; height: 100px;">
+          <a-icon type="folder-open" />
           Open
         </a-button>
       </a-col>
       <a-col>
         <p>Open <a @click="openfile(exampleFile)">Example Sheet</a></p>
-        <p>View <a href="https://github.com/phcreery/mathpad">Source Code</a></p>
+        <p>Read <a target="_blank" href="https://github.com/phcreery/mathpad">Documentation</a></p>
+        <p>View <a target="_blank" href="https://github.com/phcreery/mathpad">Source Code</a></p>
       </a-col>
     </a-row>
   </div>
@@ -83,11 +87,14 @@ export default {
   },
   beforeDestroy() {},
   methods: {
+    promptopenfile(file) {
+      EventBus.$emit('promptopenfile', file)
+    },
     openfile(file) {
       EventBus.$emit('openfile', file)
     },
-    newfile() {
-      EventBus.$emit('newfile')
+    promptnewfile() {
+      EventBus.$emit('promptnewfile')
     }
   },
   computed: {}
