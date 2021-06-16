@@ -7,21 +7,21 @@
       <!-- :style="{ marginTop: this.mounted ? '0' : '110vh' }" -->
       <a-layout-content class="content dwgtable center" :class="{ withscratchpad: scratchpad }">
         <div :style="{ height: '100%' }">
-          <File v-if="file" :file="file" :key="remountticker" />
+          <File v-if="isFileOpen" :file="fileToUse" :key="remountticker" ref="file" />
           <FrontPage v-else />
           <a-modal v-model="openfilemodal" title="Open File" @ok="handleOpenOk">
-            <a-textarea v-model="filetoopen" :auto-size="{ minRows: 8, maxRows: 20 }" />
+            <a-textarea v-model="fileToUse" :auto-size="{ minRows: 8, maxRows: 20 }" />
           </a-modal>
           <a-modal v-model="savefilemodal" title="Save File" @ok="handleSaveOk">
-            <a-textarea v-model="filetoopen" :auto-size="{ minRows: 8, maxRows: 20 }" />
+            <a-textarea v-model="fileToUse" :auto-size="{ minRows: 8, maxRows: 20 }" />
           </a-modal>
         </div>
 
-        <a-button v-if="file" type="dashed" block style="margin-top: 4px;" @click="addpage">
+        <a-button v-if="isFileOpen" type="dashed" block style="margin-top: 4px;" @click="addpage">
           Add Page
         </a-button>
       </a-layout-content>
-      <Footer v-if="file" />
+      <Footer v-if="isFileOpen" />
     </a-layout>
   </div>
 </template>
@@ -47,24 +47,15 @@ export default {
   data() {
     return {
       scratchpad: false,
-      // fileOpen: false,
       remountticker: 0,
       openfilemodal: false,
       savefilemodal: false,
-      file: undefined,
-      filetoopen: `{
-  "pages": 1,
-  "activeEquations": [0],
-  "equations": [
-  ]
-}
-`,
+      isFileOpen: false,
+      fileToUse: undefined,
       blankfile: {
         pages: 1,
         activeEquations: [0], // by IDs
-        equations: [
-          // ID: { attributes }
-        ]
+        equations: []
       }
     }
   },
@@ -77,34 +68,45 @@ export default {
       this.openfilemodal = true
     })
     EventBus.$on('openfile', file => {
-      // this.fileOpen = false
-      this.file = file
+      // this.isFileOpen = false
+      this.fileToUse = file
       this.remountticker += 1
-      // this.fileOpen = true
+      this.isFileOpen = true
     })
     EventBus.$on('promptnewfile', () => {
-      console.log('newfile')
-      // this.fileOpen = false
-      this.file = undefined
-      console.log('done with new file?', this.remountticker, this.file == undefined)
-      this.$nextTick(() => {
-        // Add the component back in
-        this.file = this.blankfile
+      if (this.isFileOpen) {
+        let parent = this
+        this.$confirm({
+          title: 'Do you want to discard your current work?',
+          // content: () => <div style="color:red;">Some descriptions</div>,
+          okText: 'Yes',
+          okType: 'danger',
+          cancelText: 'No',
+          onOk() {
+            console.log('OK')
+            console.log('newfile')
+            parent.fileToUse = JSON.parse(JSON.stringify(parent.blankfile))
+            parent.remountticker += 1
+            parent.isFileOpen = true
+          },
+          onCancel() {
+            console.log('Cancel')
+          },
+          class: 'test'
+        })
+      } else {
+        console.log('newfile')
+        this.fileToUse = JSON.parse(JSON.stringify(this.blankfile))
         this.remountticker += 1
-
-        console.log('done with new file?', this.remountticker, this.file == undefined)
-      })
-      // console.log(this.file, this.blankfile)
-      // this.remountticker += 1
-      // this.fileOpen = true
+        this.isFileOpen = true
+      }
     })
     EventBus.$on('promptclosefile', () => {
-      // this.fileOpen = false
-      this.file = undefined
+      this.isFileOpen = false
+      this.fileToUse = undefined
     })
     EventBus.$on('promptsavefile', () => {
-      // this.fileOpen = false
-      // this.file = {}
+      this.fileToUse = JSON.stringify(this.$refs.file.storage)
       this.savefilemodal = true
     })
   },
@@ -120,7 +122,7 @@ export default {
       console.log('Opening', this.file)
       // this.file = this.blankfile
       this.openfilemodal = false
-      this.fileOpen = true
+      this.isFileOpen = true
     }
   }
 }

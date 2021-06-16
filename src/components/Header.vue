@@ -37,6 +37,9 @@
                   <a-menu-item>
                     <a target="_blank" rel="noopener noreferrer" @click="promptopenfile()">Open</a>
                   </a-menu-item>
+                  <a-menu-item>
+                    <a target="_blank" rel="noopener noreferrer" @click="promptclosefile()">Close</a>
+                  </a-menu-item>
                 </a-menu>
               </a-dropdown>
             </a-menu-item>
@@ -86,6 +89,9 @@ export default {
     },
     promptsavefile() {
       EventBus.$emit('promptsavefile')
+    },
+    promptclosefile() {
+      EventBus.$emit('promptclosefile')
     }
   },
   computed: {}

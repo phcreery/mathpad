@@ -87,58 +87,22 @@ export default {
         numberformat: 'decimals',
         decimals: 5,
         outputFormat: 'LaTeX'
+      },
+      storage: {
+        pages: 2,
+        activeEquations: [0], // by IDs
+        equations: []
       }
-      // The "File" that is open
-      // storage: {
-      //   pages: 2,
-      //   activeEquations: [0], // by IDs
-      //   equations: [
-      //     // ID: { attributes }
-      //     { id: 0, x: 20, y: 20, function: 'f(y) \\coloneq 3 \\cdot y', result: '' },
-      //     { id: 1, x: 20, y: 60, function: 'f(3)', result: '' },
-      //     { id: 2, x: 20, y: 100, function: '3.7847*7.873222', result: '' },
-      //     { id: 3, x: 20, y: 200, function: 'g:3', result: '' },
-      //     { id: 4, x: 20, y: 240, function: 'g+3', result: '' },
-      //     { id: 5, x: 20, y: 280, function: '\\frac{4}{5}', result: '' },
-      //     { id: 6, x: 20, y: 340, function: 'solve(4x=2,x)', result: '' },
-      //     { id: 7, x: 20, y: 400, function: 'simplify((x^2+4*x-45)/(x^2+x-30))', result: '' },
-
-      //     { id: 8, x: 300, y: 20, function: 'fib(15)', result: '' },
-      //     { id: 9, x: 300, y: 60, function: '\\sqrt{a^2 + b^2}', result: '' },
-      //     { id: 10, x: 300, y: 100, function: 'integrate(sec(x)^2, x)', result: '' },
-      //     { id: 11, x: 300, y: 140, function: '\\int(\\sec(x)^2),dx', result: '' },
-      //     { id: 12, x: 300, y: 200, function: 'abs(-2)', result: '' },
-      //     { id: 13, x: 300, y: 240, function: '\\operatorname{abs}(-2)', result: '' },
-      //     { id: 14, x: 300, y: 280, function: '\\left|-3\\right|  ', result: '' },
-      //     { id: 15, x: 400, y: 280, function: '|-3|  ', result: '' }, // error but OK
-      //     { id: 16, x: 300, y: 320, function: 'round(2.56,1)', result: '' },
-      //     { id: 17, x: 300, y: 360, function: '\\operatorname{round}(2.56,1)', result: '' },
-
-      //     { id: 18, x: 600, y: 20, function: 'lcm(3, 21)', result: '' },
-      //     { id: 19, x: 600, y: 60, function: '\\operatorname{lcm}(3, 21)', result: '' },
-      //     { id: 20, x: 600, y: 100, function: 'factorial(4)', result: '' },
-      //     { id: 21, x: 600, y: 140, function: '4!', result: '' },
-      //     { id: 22, x: 20, y: 460, function: 'diff(cos(x)*sin(x), x)', result: '' },
-      //     { id: 23, x: 20, y: 500, function: 'diff(x^3+a*x^3+x^2, x, 2)', result: '' },
-
-      //     { id: 24, x: 600, y: 460, function: 'g(x) \\coloneq 2 \\cdot x^{20}', result: '' },
-      //     { id: 25, x: 600, y: 500, function: '\\frac{\\differentialD g(x)}{\\differentialD x}', result: '' }, // error d(g(x))/d(x)
-      //     { id: 26, x: 20, y: 540, function: 'laplace(t^6, t, s)', result: '' },
-
-      //     { id: 27, x: 20, y: 580, function: 'defint(sin(x), 0, \\pi)', result: '' },
-      //     { id: 28, x: 300, y: 580, function: '\\int_0^\\pi(\\sin(x)),dx', result: '' }, // error
-      //     { id: 29, x: 600, y: 580, function: '\\int_{0}^{\\pi}(\\sin(x)),dx', result: '' }, // error
-      //     { id: 30, x: 20, y: 140, function: '3.7847\\cdot7.873222', result: '' } // error
-      //   ]
-      // }
     }
   },
   created: function() {
     // copy contencts of prop into local variable for editing
-    this.storage = this.file
+    this.storage = JSON.parse(JSON.stringify(this.file))
+    console.log('recreated file - storage, file', this.storage, this.file)
   },
+  beforeMount: function() {},
   mounted: function() {
-    // this.storage = this.file
+    console.log('remounted file')
     EventBus.$on('doc-math-options', mathOptions => (this.mathOptions = mathOptions))
     EventBus.$on('compute', () => this.compute())
     EventBus.$on('togglevirtualkb', () =>
@@ -153,6 +117,10 @@ export default {
       console.log('new page')
       this.storage.pages += 1
     })
+    EventBus.$on('newfilerefresh', () => {
+      console.log(this.file, this.storage)
+      this.storage = this.file
+    })
 
     this.mounted = true
 
@@ -164,15 +132,17 @@ export default {
     // fix to $refs break on hot reload
     interact('.equationarea').unset()
     interact('.node_parent').unset()
+    this.mounted = false
   },
   methods: {
-    // here's an explanation of how I got the context menu to work
-    // this interact.js instance is listening for clicks on the equation area (not child elements)
-    // WHEN it detects a 'tap' & right click & and directly on 'equationarea': it quickly enables
-    // the context menu trigger (contextmenutrigger) and thus lets antd open the context menu
-    // ELSE: it handles other conditions
-    // NOTE: the node context menu is always listening to the .node class 'tap's (inside the *node.vue el)
     addInteraction() {
+      // here's an explanation of how I got the context menu to work
+      // this interact.js instance is listening for clicks on the equation area (not child elements)
+      // WHEN it detects a 'tap' & right click & and directly on 'equationarea': it quickly enables
+      // the context menu trigger (contextmenutrigger) and thus lets antd open the context menu
+      // ELSE: it handles other conditions
+      // NOTE: the node context menu is always listening to the .node class 'tap's (inside the *node.vue el)
+
       // var parent = this
       window.addEventListener('scroll', this.updateScroll)
       // var movable = document.querySelectorAll('.node_parent') //.node_parent  #grid-snap
@@ -276,6 +246,9 @@ export default {
     mouseleavenode() {
       console.log('mouseleave')
       this.contextmenutrigger = ['contextmenu']
+    },
+    getFile() {
+      return this.storage
     },
     compute() {
       calc.flush()
