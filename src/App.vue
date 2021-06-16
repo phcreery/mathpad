@@ -10,7 +10,15 @@
           <File v-if="isFileOpen" :file="fileToUse" :key="remountticker" ref="file" />
           <FrontPage v-else />
           <a-modal v-model="openfilemodal" title="Open File" @ok="handleOpenOk">
-            <a-textarea v-model="fileToUseString" :auto-size="{ minRows: 8, maxRows: 20 }" />
+            <a-textarea v-model="fileToUseString" :auto-size="{ minRows: 8, maxRows: 20 }" :style="{ marginBottom: '20px' }" />
+            <a-upload-dragger name="file" :multiple="false" @change="handleUploadChange" :before-upload="beforeUpload">
+              <p class="ant-upload-drag-icon">
+                <a-icon type="inbox" />
+              </p>
+              <p class="ant-upload-text">
+                Click or drag file to this area to upload
+              </p>
+            </a-upload-dragger>
           </a-modal>
           <a-modal v-model="savefilemodal" title="Save File" @ok="handleSaveOk">
             <a-textarea v-model="fileToUseString" :auto-size="{ minRows: 8, maxRows: 20 }" />
@@ -147,6 +155,27 @@ export default {
       this.openfilemodal = false
       this.remountticker += 1
       this.isFileOpen = true
+    },
+    handleUploadChange(event) {
+      console.log('upload change', event)
+    },
+    beforeUpload(file) {
+      let name = file.name
+      let path = file.path
+      let size = file.size
+      const reader = new FileReader()
+      reader.addEventListener('load', event => {
+        // console.log(event)
+        // console.log(event.target.result)
+        let blob = event.target.result
+        let data = blob.split(',')
+        let base64 = data[1]
+        let string = atob(base64)
+        console.log('File:', string)
+        this.fileToUse = JSON.parse(string)
+      })
+      reader.readAsDataURL(file)
+      return false // to prevent antd fron trying to upload somewhere
     }
   },
   filters: {
