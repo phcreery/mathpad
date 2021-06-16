@@ -105,8 +105,28 @@ export default {
       }
     })
     EventBus.$on('promptclosefile', () => {
-      this.isFileOpen = false
-      this.fileToUse = undefined
+      if (this.isFileOpen) {
+        let parent = this
+        this.$confirm({
+          title: 'Do you want to discard your current work?',
+          // content: () => <div style="color:red;">Some descriptions</div>,
+          okText: 'Yes',
+          okType: 'danger',
+          cancelText: 'No',
+          onOk() {
+            console.log('OK')
+            parent.isFileOpen = false
+            parent.fileToUse = undefined
+          },
+          onCancel() {
+            console.log('Cancel')
+          },
+          class: 'test'
+        })
+      } else {
+        this.isFileOpen = false
+        this.fileToUse = undefined
+      }
     })
     EventBus.$on('promptsavefile', () => {
       this.fileToUse = this.$refs.file.storage
