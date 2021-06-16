@@ -10,10 +10,10 @@
           <File v-if="isFileOpen" :file="fileToUse" :key="remountticker" ref="file" />
           <FrontPage v-else />
           <a-modal v-model="openfilemodal" title="Open File" @ok="handleOpenOk">
-            <a-textarea v-model="fileToUse" :auto-size="{ minRows: 8, maxRows: 20 }" />
+            <a-textarea v-model="fileToUseString" :auto-size="{ minRows: 8, maxRows: 20 }" />
           </a-modal>
           <a-modal v-model="savefilemodal" title="Save File" @ok="handleSaveOk">
-            <a-textarea v-model="fileToUse" :auto-size="{ minRows: 8, maxRows: 20 }" />
+            <a-textarea v-model="fileToUseString" :auto-size="{ minRows: 8, maxRows: 20 }" />
           </a-modal>
         </div>
 
@@ -51,7 +51,8 @@ export default {
       openfilemodal: false,
       savefilemodal: false,
       isFileOpen: false,
-      fileToUse: undefined,
+      fileToUse: undefined, // Object: the actual file in use passed into the Component
+      // fileToOpen: '', // String: the file buffer when prompted to open a new file
       blankfile: {
         pages: 1,
         activeEquations: [0], // by IDs
@@ -65,10 +66,12 @@ export default {
     })
     EventBus.$on('promptopenfile', () => {
       console.log('opening...')
+      // this.fileToOpen = JSON.stringify(this.fileToUse)
       this.openfilemodal = true
     })
     EventBus.$on('openfile', file => {
       // this.isFileOpen = false
+      console.log('opening file', file)
       this.fileToUse = file
       this.remountticker += 1
       this.isFileOpen = true
@@ -106,7 +109,7 @@ export default {
       this.fileToUse = undefined
     })
     EventBus.$on('promptsavefile', () => {
-      this.fileToUse = JSON.stringify(this.$refs.file.storage)
+      this.fileToUse = this.$refs.file.storage
       this.savefilemodal = true
     })
   },
@@ -118,11 +121,29 @@ export default {
       this.savefilemodal = false
     },
     handleOpenOk() {
-      this.file = JSON.parse(this.filetoopen)
-      console.log('Opening', this.file)
+      // this.fileToUse = JSON.parse(this.fileToOpen)
+      console.log('Opening', this.fileToUse)
       // this.file = this.blankfile
       this.openfilemodal = false
+      this.remountticker += 1
       this.isFileOpen = true
+    }
+  },
+  filters: {
+    toString(json) {
+      return JSON.stringify(json)
+    }
+  },
+  computed: {
+    fileToUseString: {
+      get() {
+        console.log('getting string', JSON.stringify(this.fileToUse))
+        return JSON.stringify(this.fileToUse)
+      },
+      set(value) {
+        this.fileToUse = JSON.parse(value)
+        console.log('setting string to', this.fileToUse)
+      }
     }
   }
 }
