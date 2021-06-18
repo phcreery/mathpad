@@ -35,7 +35,47 @@ function prepareExpression(str) {
 
 // module.exports = {
 export function flush() {
+  nerdamer.clearVars()
   nerdamer.flush()
+}
+
+export function calculate2(inLaTeX, options) {
+  // modified for LaTeX input
+  // var txt = getText()
+  var expressionAndScope = prepareExpression(inLaTeX)
+  var expression = expressionAndScope[0]
+  var scope = expressionAndScope[1]
+  // var functionRegex = /^([a-z_][a-z\d_]*)\(([a-z_,\s]*)\):=(.+)$/gi //does not validate the expression
+  // var functionRegex = /^([a-z_][a-z\d_]*)\(([a-z_,\s]*)\)\s*(?::=|\\coloneq)\s*(.+)$/gi
+  // added symbols and numerals to variable names
+  // var functionRegex = /^([a-z_][a-z\d_]*)\(([\\a-z_\d,\s]*)\)\s*(?::=|\\coloneq)\s*(.+)$/gi
+  // var functionDeclaration = functionRegex.exec(expression)
+  // console.log(JSON.stringify(expression), ' is function?', functionDeclaration)
+
+  expression = expression.replace('\\coloneq', ':=')
+
+  var evaluated
+  var text
+  var LaTeX
+
+  try {
+    console.log('looking at', expression)
+    expression = nerdamer.convertFromLaTeX(expression).toString()
+    console.log('expression(convertFromLaTeX)', expression, scope)
+    evaluated = nerdamer(expression, scope)
+    evaluated = evaluated.evaluate()
+    text = evaluated.text(options.numberformat == 'decimals' ? 'decimals' : undefined, options.decimals)
+    // LaTeX = evaluated.toTeX(options.numberformat == 'decimals' ? 'decimals' : undefined, options.decimals)
+    LaTeX = nerdamer(text).toTeX(options.numberformat == 'decimals' ? 'decimals' : undefined)
+    return { text, LaTeX }
+    // return undefined
+  } catch (e) {
+    console.log(e.stack)
+    console.log('Something went wrong. Nerdamer could not parse expression!</br>' + e.toString())
+    return { text: 'error', LaTeX: 'error', error: 'Something went wrong. Nerdamer could not parse expression!', body: e.toString() }
+  }
+
+  // return undefined
 }
 
 export function calculate(inLaTeX, options) {
@@ -45,7 +85,9 @@ export function calculate(inLaTeX, options) {
   var expression = expressionAndScope[0]
   var scope = expressionAndScope[1]
   // var functionRegex = /^([a-z_][a-z\d_]*)\(([a-z_,\s]*)\):=(.+)$/gi //does not validate the expression
-  var functionRegex = /^([a-z_][a-z\d_]*)\(([a-z_,\s]*)\)\s*(?::=|\\coloneq)\s*(.+)$/gi //does not validate the expression
+  // var functionRegex = /^([a-z_][a-z\d_]*)\(([a-z_,\s]*)\)\s*(?::=|\\coloneq)\s*(.+)$/gi
+  // added symbols and numerals to variable names
+  var functionRegex = /^([a-z_][a-z\d_]*)\(([\\a-z_\d,\s]*)\)\s*(?::=|\\coloneq)\s*(.+)$/gi
   var functionDeclaration = functionRegex.exec(expression)
   console.log(JSON.stringify(expression), ' is function?', functionDeclaration)
   var evaluated

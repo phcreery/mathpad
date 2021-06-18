@@ -77,7 +77,12 @@ export default {
           { id: 27, x: 20, y: 580, function: 'defint(sin(x), 0, \\pi)', result: '' },
           { id: 28, x: 300, y: 580, function: '\\int_0^\\pi(\\sin(x)),dx', result: '' }, // error
           { id: 29, x: 600, y: 580, function: '\\int_{0}^{\\pi}(\\sin(x)),dx', result: '' }, // error
-          { id: 30, x: 20, y: 140, function: '3.7847\\cdot7.873222', result: '' } // error
+          { id: 30, x: 20, y: 140, function: '3.7847\\cdot7.873222', result: '' }, // error
+
+          { id: 31, x: 20, y: 640, function: 'snells(n,t,nn)\\coloneq\\frac{n\\cdot(\\sin(t))}{nn}', result: '' },
+          // snells(n,t,nn)\\coloneq\\frac{n\\cdot(\\sin(t))}{nn}
+          // snells(n_1,\\theta_1,n_2)\\coloneq\\frac{n_1\\cdot\\sin(\\theta_1)}{n_2}
+          { id: 32, x: 20, y: 690, function: 'degrees(snells(1,radians(45),1.5))', result: '' }
         ]
       }
     }
