@@ -9,6 +9,7 @@
         <div :style="{ height: '100%' }">
           <File v-if="isFileOpen" :file="fileToUse" :key="remountticker" ref="file" />
           <FrontPage v-else />
+          <!-- OPEN modal -->
           <a-modal v-model="openfilemodal" title="Open File" @ok="handleOpenOk">
             <a-textarea v-model="fileToUseString" :auto-size="{ minRows: 8, maxRows: 20 }" :style="{ marginBottom: '20px' }" />
             <a-upload-dragger name="file" :multiple="false" @change="handleUploadChange" :before-upload="beforeUpload">
@@ -20,8 +21,12 @@
               </p>
             </a-upload-dragger>
           </a-modal>
+          <!-- SAVE modal -->
           <a-modal v-model="savefilemodal" title="Save File" @ok="handleSaveOk">
             <a-textarea v-model="fileToUseString" :auto-size="{ minRows: 8, maxRows: 20 }" />
+            <a-button type="primary" icon="download" size="large" block @click="download()">
+              Download
+            </a-button>
           </a-modal>
         </div>
 
@@ -139,6 +144,7 @@ export default {
     EventBus.$on('promptsavefile', () => {
       this.fileToUse = this.$refs.file.storage
       this.savefilemodal = true
+      this.download('mathpad.mp', JSON.stringify(this.fileToUse))
     })
   },
   methods: {
@@ -160,9 +166,9 @@ export default {
       console.log('upload change', event)
     },
     beforeUpload(file) {
-      let name = file.name
-      let path = file.path
-      let size = file.size
+      // let name = file.name
+      // let path = file.path
+      // let size = file.size
       const reader = new FileReader()
       reader.addEventListener('load', event => {
         // console.log(event)
@@ -176,6 +182,22 @@ export default {
       })
       reader.readAsDataURL(file)
       return false // to prevent antd fron trying to upload somewhere
+    },
+    download(filename, text) {
+      // defaults
+      filename ? filename : 'mathpad.mp'
+      text ? text : JSON.stringify(this.$refs.file.storage)
+
+      var element = document.createElement('a')
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
+      element.setAttribute('download', filename)
+
+      element.style.display = 'none'
+      document.body.appendChild(element)
+
+      element.click()
+
+      document.body.removeChild(element)
     }
   },
   filters: {

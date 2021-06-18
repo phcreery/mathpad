@@ -23,15 +23,6 @@
 
       <a-col>
         <a-space :style="{ height: '36px' }">
-          <a-tooltip>
-            <template slot="title">
-              Popout Keyboard
-            </template>
-            <a-button size="small" @click="togglevirtualkb"><a-icon type="appstore"/></a-button>
-          </a-tooltip>
-
-          <div :style="{ width: '20px' }" />
-
           <!-- Number Format -->
           <a-select
             default-value="Decimal"
@@ -74,6 +65,15 @@
               LaTeX
             </a-select-option>
           </a-select>
+
+          <div :style="{ width: '20px' }" />
+
+          <a-tooltip>
+            <template slot="title">
+              Popout Keyboard
+            </template>
+            <a-button size="small" @click="togglevirtualkb"><a-icon type="appstore"/></a-button>
+          </a-tooltip>
 
           <div :style="{ width: '20px' }" />
 
