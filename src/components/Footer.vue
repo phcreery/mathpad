@@ -4,7 +4,6 @@
       <a-col :span="4">
         <a-space :style="{ height: '36px' }">
           <div :style="{ width: '20px' }" />
-          <!-- <a-icon type="calculator" /> -->
           <a-tooltip :mouseEnterDelay="1">
             <template slot="title">
               Calculate
@@ -162,7 +161,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .footer {
   background: white;

@@ -3,12 +3,6 @@
     <div style="width: 100%; display: block; height: 50px;"></div>
     <a-row style="padding: 64px;" type="flex" justify="space-around">
       <a-col>
-        <!-- <a-card hoverable style="width: 200px; margin-bottom: 20px;">
-          <h1 style="text-align: center; ">New</h1>
-        </a-card>
-        <a-card hoverable style="width: 200px">
-          <h1 style="text-align: center; ">Open</h1>
-        </a-card> -->
         <a-button type="primary" size="large" @click="promptnewfile()" style="width: 200px; height: 100px;  margin-bottom: 20px;">
           <a-icon type="file-add" />
           New

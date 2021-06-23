@@ -1,28 +1,11 @@
 <template>
   <div class="header">
-    <!-- <a-layout-header :style="{ position: 'fixed', zIndex: 1, width: '100%' }"> -->
-    <!-- <a-menu theme="light" mode="horizontal" :default-selected-keys="['2']" :style="{ lineHeight: '36px', paddingLeft: '20px' }">
-      <a-sub-menu>
-        <span slot="title" class="submenu-title-wrapper">File</span>
-        <a-menu-item key="setting:1" @click="newfile()">
-          New
-        </a-menu-item>
-        <a-menu-item key="setting:2">
-          Open
-        </a-menu-item>
-        <a-menu-item key="setting:3">
-          Save as...
-        </a-menu-item>
-      </a-sub-menu>
-    </a-menu> -->
-
     <a-row type="flex" justify="space-between" :style="{ lineHeight: '36px', paddingLeft: '20px' }">
       <a-col :span="4">
         <a-space :style="{ height: '36px' }">
           <div :style="{ width: '10px' }" />
           <h3 style="margin 0;" @click="closefile()" :style="{ cursor: 'pointer' }">mathpad</h3>
           <div :style="{ width: '10px' }" />
-          <!-- <a-button>File</a-button> -->
           <a-menu theme="light" mode="horizontal" :selectedKeys="[]" @select="() => {}" @click="() => {}" :selectable="false">
             <a-menu-item>
               <a-dropdown placement="bottomCenter">
@@ -53,8 +36,6 @@
         </a-space>
       </a-col>
     </a-row>
-
-    <!-- </a-layout-header> -->
   </div>
 </template>
 
@@ -98,7 +79,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .header {
   position: fixed;

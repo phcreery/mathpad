@@ -7,7 +7,6 @@
       <div class="page graph-paper"></div>
     </div>
 
-    <!-- a-dropdown container -->
     <a-dropdown :trigger="contextmenutrigger" v-model="contextmenu">
       <!-- equationarea: where all the interaction and computation happens. Should fill up the entire easle area using -->
       <!-- $parent.$el.offsetHeight & $parent.$el.offsetWidth -->
@@ -143,7 +142,6 @@ export default {
       // ELSE: it handles other conditions
       // NOTE: the node context menu is always listening to the .node class 'tap's (inside the *node.vue el)
 
-      // var parent = this
       window.addEventListener('scroll', this.updateScroll)
       // var movable = document.querySelectorAll('.node_parent') //.node_parent  #grid-snap
       interact('.equationarea')
@@ -214,7 +212,6 @@ export default {
       newEquation.id = next
       newEquation.x = this.mouseX - 30 // pageX
       newEquation.y = this.mouseY - 50
-      // newEquation.function = "f(x):="
       this.storage.equations.push(newEquation)
       this.contextmenu = false
       this.storage.activeEquations = [next]
@@ -252,7 +249,7 @@ export default {
     },
     compute() {
       calc.flush()
-      // sort the equations be y position
+      // sort the equations by y position, if equal, x position
       this.storage.equations.sort((a, b) => (a.y > b.y ? 1 : a.y === b.y ? (a.x > b.x ? 1 : -1) : -1))
       this.storage.equations.forEach((equation, index, equations) => {
         // find the vue element with the same ID as the looped equation
@@ -283,10 +280,8 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .graph-paper {
-  /* --back-color: #fffcf154; */
   --back-color: #fffdf8;
   --front-color: #bed1d354;
   /* width: 100%;
@@ -297,8 +292,6 @@ export default {
     linear-gradient(var(--front-color) 0px, transparent 1px), linear-gradient(90deg, var(--front-color) 1px, var(--back-color) 1px);
   background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
   background-position: -4px -3px, -3px -4px, -2px -3px, -3px -2px;
-  /* padding: 24px; */
-  /* margin-bottom: 4px; */
 }
 .equationarea {
   position: absolute;

@@ -79,8 +79,6 @@
 <script>
 import interact from 'interactjs'
 
-// import { EventBus } from './eventbus.js'
-
 export default {
   name: 'Node',
   components: {},
@@ -120,19 +118,6 @@ export default {
   },
   methods: {
     mathfieldStyleing() {
-      // console.log('doing', this.$refs.mathfield, this.$el, this.$el.querySelector('#mf' + this.id)) //document.querySelectorAll('.mathfield')
-      // document
-      //   .querySelector('.mathfield')
-      //   .shadowRoot.querySelector('.ML__fieldcontainer')
-      //   .setAttribute('style', 'min-height: 1px;')
-      // document
-      //   .querySelector('#mf')
-      //   .shadowRoot.querySelector('div > span.ML__fieldcontainer')
-      //   .setAttribute('style', 'min-height: 1px;')
-      // this.$refs.mathfield.$el.shadowRoot.querySelector('div > .ML__fieldcontainer').style['minHeight'] = '1px'
-      // this.$refs.mathfield.$el.shadowRoot.querySelector('div > span.ML__fieldcontainer > span').style['padding'] = '0px'
-      // this.$el.querySelector('#mf').shadowRoot.querySelector('div > .ML__fieldcontainer').style['minHeight'] = '1px'
-      // this.$el.querySelector('#mf').shadowRoot.querySelector('div > span.ML__fieldcontainer > span').style['padding'] = '0px'
       this.shadowRootEl = document.querySelector('#mf_' + this.id).shadowRoot
       // var shadowRootElstyle = this.shadowRootEl.querySelector('style') // where the black border is at...
       this.shadowRootEl.querySelector('div > .ML__fieldcontainer').style['minHeight'] = '1px'
@@ -145,7 +130,6 @@ export default {
       var y = this.y
       var id = this.id
       element.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px)'
-      // var parent = this // alternative to .bind(this)
 
       interact(element)
         .draggable({
@@ -171,10 +155,8 @@ export default {
         .on(
           'tap',
           function() {
-            // EventBus.$emit('selected', id)
             this.$emit('selected', id)
             console.log('Mouse button:', event.button, event.x)
-            // parent.contextmenu = false
             // if (event.button == 2) {
             //   parent.contextmenu = true
             // }
@@ -188,8 +170,6 @@ export default {
           function(event) {
             x += event.dx
             y += event.dy
-            // EventBus.$emit('selected', id)
-            // EventBus.$emit('moved', { id: id, x: x, y: y })
             this.$emit('selected', id)
             this.$emit('moved', { id: id, x: x, y: y })
             event.target.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
@@ -211,7 +191,6 @@ export default {
     change: function(event) {
       console.log('changed to', event, typeof event)
       this.$emit('changed', { id: this.id, to: event })
-      // this.$emit('init') // refresh
       this.localformula = event
     },
     deletenode: function() {
@@ -226,9 +205,6 @@ export default {
     },
     copyToClipboard(text) {
       var dummy = document.createElement('textarea')
-      // to avoid breaking orgain page when copying more words
-      // cant copy when adding below this code
-      // dummy.style.display = 'none'
       document.body.appendChild(dummy)
       //Be careful if you use texarea. setAttribute('value', value), which works with "input" does not work with "textarea". – Eduard
       dummy.value = text
@@ -255,16 +231,11 @@ export default {
   /* width: 100%; */
   border-radius: 4px;
   padding: 1px;
-  /* margin: 2px; */
-  /* margin: 1rem 0 0 1rem; */
-  /* background-color: #29e; */
-  /* color: #fff; */
-  /* font-size: 1.2em; */
   touch-action: none;
   width: fit-content;
 }
 .node {
-  /* relative to top-left of page sor that grid is not affected by surrounding nodes */
+  /* relative to top-left of page so that grid is not affected by surrounding nodes */
   /* position: absolute; */
   /* put equal sign to the right of the node */
   white-space: nowrap;
@@ -298,7 +269,6 @@ export default {
   /* display: inline-block; */
   font-size: 16px;
   padding: 5px;
-  /* margin: 5px; */
 }
 .output {
   padding: 5px;
@@ -314,14 +284,6 @@ export default {
 
 <style>
 /* @import "../node_modules/katex/dist/katex.min.css"; */
-/* These used to work at mathlive 0.68.1 ? */
-/* .ML__fieldcontainer {
-  height: 19px !important;
-  min-width: 20px;
-} */
-/* .ML__fieldcontainer_field {
-  min-width: 40px;
-} */
 .ML__keyboard {
   transition: none !important;
 }
