@@ -2,6 +2,7 @@
   <div id="app">
     <a-layout>
       <Header />
+      <!-- <a-layout> -->
       <!-- <Sider/> -->
       <!-- class="content dwgtable withscratchpad center"  -->
       <!-- :style="{ marginTop: this.mounted ? '0' : '110vh' }" -->
@@ -34,6 +35,7 @@
           Add Page
         </a-button>
       </a-layout-content>
+      <!-- </a-layout> -->
       <Footer v-if="isFileOpen" />
     </a-layout>
   </div>
@@ -250,7 +252,7 @@ export default {
   height: 100%;
 } */
 .page {
-  /* A4 Letter */
+  /* A4 Letter Size */
   width: 21cm;
   /* width: 90vw; */
   min-height: 29.7cm;

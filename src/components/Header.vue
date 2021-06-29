@@ -47,14 +47,7 @@ export default {
   components: {},
   props: {},
   data() {
-    return {
-      scrollPosition: null,
-      outputFormat: 'LaTeX',
-      mathOptions: {
-        numberformat: 'decimals',
-        decimals: 5
-      }
-    }
+    return {}
   },
   mounted: function() {},
   beforeDestroy() {},
